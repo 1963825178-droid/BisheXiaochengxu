@@ -20,15 +20,9 @@
 
   <view class="surface-card">
     <view class="section-title">快速试跑</view>
-    <view class="section-subtitle">先用模拟场景体验第一阶段流程。</view>
+    <view class="section-subtitle">先用模拟场景体验第二阶段主流程。</view>
     <view class="chip-list">
-      <view
-        wx:for="{{examples}}"
-        wx:key="*this"
-        class="example-chip"
-        data-text="{{item}}"
-        bindtap="fillExample"
-      >
+      <view wx:for="{{examples}}" wx:key="*this" class="example-chip" data-text="{{item}}" bindtap="fillExample">
         {{item}}
       </view>
     </view>
@@ -51,19 +45,13 @@
   <view class="surface-card">
     <view class="section-title">最近保存</view>
     <view class="journal-list">
-      <view
-        wx:for="{{recentJournals}}"
-        wx:key="id"
-        class="journal-card recent-card"
-        data-id="{{item.id}}"
-        bindtap="openDetail"
-      >
+      <view wx:for="{{recentJournals}}" wx:key="id" class="journal-card recent-card" data-id="{{item.id}}" bindtap="openDetail">
         <view class="journal-topline">
           <view class="journal-main">{{item.mainEmotion}}</view>
           <view class="muted-text">{{item.displayDateTime}}</view>
         </view>
         <view class="journal-keywords">{{item.keywordLine}}</view>
-        <view class="journal-snippet">{{item.sourceText}}</view>
+        <view class="journal-snippet">{{item.rawInput}}</view>
       </view>
     </view>
   </view>

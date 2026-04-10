@@ -5,6 +5,7 @@
       <view class="headline">{{journal.mainEmotion}}</view>
       <view class="section-subtitle">{{journal.displayDateTime}}</view>
       <view class="tag-row detail-tags">
+        <view class="soft-tag">{{sourceLabel}}</view>
         <view class="emotion-tag">{{journal.mainEmotion}}</view>
         <view wx:for="{{journal.subEmotions}}" wx:key="*this" class="soft-tag">{{item}}</view>
       </view>
@@ -12,7 +13,7 @@
 
     <view class="surface-card">
       <view class="section-title">你的记录</view>
-      <view class="body-text top-gap">{{journal.sourceText}}</view>
+      <view class="body-text top-gap">{{journal.rawInput}}</view>
     </view>
 
     <view class="surface-card">
@@ -47,7 +48,7 @@
 
   <view wx:else class="surface-card empty-state">
     <view class="section-title">没有找到这条日记</view>
-    <view class="section-subtitle">可能是参数缺失，或者这条模拟数据还没有生成。</view>
+    <view class="section-subtitle">可能是参数缺失，或者这条记录还没有生成。</view>
     <button class="primary-btn" bindtap="goHome">回到首页</button>
   </view>
 </view>

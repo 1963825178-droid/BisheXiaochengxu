@@ -1,8 +1,10 @@
 const { analyzeEmotionText } = require('./mockEmotion');
-const { cloneDate, formatDateKey, formatDateTime, formatMonthLabel, isSameMonth } = require('../utils/time');
+const { normalizeEmotionResult } = require('./emotionEngine');
+const { cloneDate, formatDateKey, formatMonthLabel, isSameMonth } = require('../utils/time');
 
-const JOURNAL_STORAGE_KEY = 'emotion-keyword-journals-v1';
-const PENDING_STORAGE_KEY = 'emotion-keyword-pending-v1';
+const JOURNAL_STORAGE_KEY = 'emotion-keyword-journals-v2';
+const PENDING_ANALYSIS_KEY = 'emotion-keyword-pending-analysis-v2';
+const PENDING_INPUT_KEY = 'emotion-keyword-pending-input-v2';
 
 const SAMPLE_TEXTS = [
   {
@@ -59,6 +61,15 @@ function writeStorage(key, value) {
   wx.setStorageSync(key, value);
 }
 
+function removeStorage(key) {
+  try {
+    wx.removeStorageSync(key);
+  } catch (error) {
+    return null;
+  }
+  return null;
+}
+
 function createJournalId(now) {
   return `journal_${now.getTime()}_${Math.floor(Math.random() * 10000)}`;
 }
@@ -69,11 +80,11 @@ function attachJournalMeta(journal) {
   });
 }
 
-function createJournalFromResult(result, now) {
-  const createdDate = cloneDate(now);
+function createJournalFromResult(result) {
+  const createdDate = result.createdAt ? new Date(result.createdAt) : new Date();
   return {
     id: createJournalId(createdDate),
-    sourceText: result.sourceText,
+    rawInput: result.rawInput,
     mainEmotion: result.mainEmotion,
     subEmotions: result.subEmotions.slice(),
     explanations: Object.assign({}, result.explanations),
@@ -82,10 +93,22 @@ function createJournalFromResult(result, now) {
     isNegative: result.isNegative,
     isHighRisk: result.isHighRisk,
     diaryText: result.diaryText,
-    createdAt: createdDate.toISOString(),
-    dateKey: formatDateKey(createdDate),
-    displayDateTime: formatDateTime(createdDate)
+    createdAt: result.createdAt,
+    dateKey: result.dateKey,
+    displayDateTime: result.displayDateTime,
+    source: result.source || 'mock'
   };
+}
+
+function buildSeedJournal(item) {
+  const date = new Date();
+  date.setHours(item.hour, item.minute, 0, 0);
+  date.setDate(date.getDate() - item.offsetDays);
+  const result = normalizeEmotionResult(analyzeEmotionText(item.text), {
+    defaultSource: 'mock',
+    now: date
+  });
+  return createJournalFromResult(result);
 }
 
 function readJournalsRaw() {
@@ -94,12 +117,7 @@ function readJournalsRaw() {
     return existing;
   }
 
-  const now = new Date();
-  const seeds = SAMPLE_TEXTS.map((item) => {
-    const date = new Date(now.getFullYear(), now.getMonth(), now.getDate() - item.offsetDays, item.hour, item.minute, 0);
-    return createJournalFromResult(analyzeEmotionText(item.text, { now: date }), date);
-  });
-
+  const seeds = SAMPLE_TEXTS.map(buildSeedJournal);
   writeStorage(JOURNAL_STORAGE_KEY, seeds);
   return seeds;
 }
@@ -127,24 +145,46 @@ function getJournalById(journalId) {
   return getAllJournals().find((journal) => journal.id === journalId) || null;
 }
 
+function setPendingRawInput(rawInput) {
+  writeStorage(PENDING_INPUT_KEY, rawInput);
+  return rawInput;
+}
+
+function getPendingRawInput() {
+  return readStorage(PENDING_INPUT_KEY, '');
+}
+
+function clearPendingRawInput() {
+  return removeStorage(PENDING_INPUT_KEY);
+}
+
 function setPendingAnalysis(result) {
-  writeStorage(PENDING_STORAGE_KEY, result);
+  writeStorage(PENDING_ANALYSIS_KEY, result);
   return result;
 }
 
 function getPendingAnalysis() {
-  return readStorage(PENDING_STORAGE_KEY, null);
+  return readStorage(PENDING_ANALYSIS_KEY, null);
 }
 
-function analyzeAndStore(text) {
-  const result = analyzeEmotionText(text);
-  setPendingAnalysis(result);
-  return result;
+function clearPendingAnalysis() {
+  return removeStorage(PENDING_ANALYSIS_KEY);
+}
+
+function isSavableResult(result) {
+  return Boolean(
+    result &&
+    result.rawInput &&
+    result.mainEmotion &&
+    result.analysis &&
+    result.source &&
+    result.createdAt
+  );
 }
 
 function savePendingAnalysis() {
   const pending = getPendingAnalysis();
-  if (!pending) {
+  if (!isSavableResult(pending)) {
     return null;
   }
 
@@ -154,8 +194,7 @@ function savePendingAnalysis() {
     return existing ? attachJournalMeta(existing) : null;
   }
 
-  const createdDate = pending.createdAt ? new Date(pending.createdAt) : new Date();
-  const journal = createJournalFromResult(pending, createdDate);
+  const journal = createJournalFromResult(pending);
   journals.unshift(journal);
   writeJournalsRaw(journals);
   setPendingAnalysis(Object.assign({}, pending, { savedId: journal.id }));
@@ -282,21 +321,25 @@ function getEmotionColor(emotion) {
     '紧绷': '#62756F',
     '茫然': '#7A9088',
     '分心': '#90A1A0',
-    '绝望': '#8D7474'
+    '极度低落': '#8D7474'
   };
 
   return palette[emotion] || '#6F8E83';
 }
 
 module.exports = {
-  analyzeAndStore,
   buildCalendarMonth,
+  clearPendingAnalysis,
+  clearPendingRawInput,
   getAllJournals,
   getEntriesByDate,
   getJournalById,
   getMonthlyStats,
   getPendingAnalysis,
+  getPendingRawInput,
   getRecentJournals,
   initializeStore,
-  savePendingAnalysis
+  savePendingAnalysis,
+  setPendingAnalysis,
+  setPendingRawInput
 };

@@ -4,7 +4,8 @@ Page({
   data: {
     journal: null,
     explanationPairs: [],
-    suggestionTitle: '轻量疏导'
+    suggestionTitle: '轻量疏导',
+    sourceLabel: ''
   },
 
   onLoad(options) {
@@ -13,13 +14,15 @@ Page({
       this.setData({
         journal: null,
         explanationPairs: [],
-        suggestionTitle: '轻量疏导'
+        suggestionTitle: '轻量疏导',
+        sourceLabel: ''
       });
       return;
     }
 
     this.setData({
       journal,
+      sourceLabel: journal.source === 'mock' ? '演示结果' : '真实分析',
       suggestionTitle: journal.isHighRisk ? '支持提示' : '轻量疏导',
       explanationPairs: [journal.mainEmotion].concat(journal.subEmotions).map((emotion) => ({
         emotion,

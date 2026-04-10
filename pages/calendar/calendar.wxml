@@ -33,19 +33,13 @@
     <view class="section-title">{{selectedTitle}}</view>
 
     <view wx:if="{{selectedEntries.length}}" class="journal-list">
-      <view
-        wx:for="{{selectedEntries}}"
-        wx:key="id"
-        class="journal-card recent-card"
-        data-id="{{item.id}}"
-        bindtap="openDetail"
-      >
+      <view wx:for="{{selectedEntries}}" wx:key="id" class="journal-card recent-card" data-id="{{item.id}}" bindtap="openDetail">
         <view class="journal-topline">
           <view class="journal-main">{{item.mainEmotion}}</view>
           <view class="muted-text">{{item.displayDateTime}}</view>
         </view>
-        <view class="journal-keywords">{{item.keywordLine}}</view>
-        <view class="journal-snippet">{{item.sourceText}}</view>
+        <view class="journal-keywords">{{item.keywordLine}} · {{item.source === 'mock' ? '演示结果' : '真实分析'}}</view>
+        <view class="journal-snippet">{{item.rawInput}}</view>
       </view>
     </view>
 

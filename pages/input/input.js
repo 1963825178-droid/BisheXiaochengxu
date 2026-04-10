@@ -1,4 +1,8 @@
-const { analyzeAndStore, getRecentJournals } = require('../../services/journalStore');
+const {
+  clearPendingAnalysis,
+  getRecentJournals,
+  setPendingRawInput
+} = require('../../services/journalStore');
 
 Page({
   data: {
@@ -44,7 +48,8 @@ Page({
       return;
     }
 
-    analyzeAndStore(text);
+    clearPendingAnalysis();
+    setPendingRawInput(text);
     wx.navigateTo({
       url: '/pages/result/result'
     });

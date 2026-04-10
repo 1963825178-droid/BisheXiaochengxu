@@ -1,12 +1,38 @@
 <view class="page-shell">
-  <block wx:if="{{result}}">
+  <view wx:if="{{status === 'analyzing'}}" class="surface-card loading-card">
+    <view class="section-title">正在分析中</view>
+    <view class="section-subtitle">正在调用后端情绪分析服务，请稍等片刻。</view>
+    <view class="loading-wrap">
+      <view class="loading-dot"></view>
+      <view class="loading-dot"></view>
+      <view class="loading-dot"></view>
+    </view>
+  </view>
+
+  <view wx:elif="{{status === 'failed'}}" class="surface-card empty-state">
+    <view class="section-title">分析失败</view>
+    <view class="section-subtitle">{{errorMessage}}</view>
+    <view class="page-actions top-gap-lg">
+      <button class="primary-btn" bindtap="retryAnalysis">重试真实分析</button>
+      <button wx:if="{{canUseMockFallback}}" class="secondary-btn" bindtap="useMockDemo">使用 mock 演示</button>
+      <button class="ghost-btn" bindtap="backToInput">返回重新输入</button>
+    </view>
+  </view>
+
+  <block wx:elif="{{status === 'succeeded' && result}}">
     <view class="hero-card result-hero">
       <view class="muted-text">主情绪</view>
       <view class="result-main">{{result.mainEmotion}}</view>
       <view class="section-subtitle">{{result.displayDateTime}}</view>
       <view class="tag-row result-tags">
+        <view class="soft-tag source-tag">{{sourceLabel}}</view>
         <view wx:for="{{result.subEmotions}}" wx:key="*this" class="emotion-tag">{{item}}</view>
       </view>
+    </view>
+
+    <view class="surface-card">
+      <view class="section-title">你的输入</view>
+      <view class="body-text analysis-text">{{result.rawInput}}</view>
     </view>
 
     <view class="surface-card">
@@ -48,6 +74,6 @@
   <view wx:else class="surface-card empty-state">
     <view class="section-title">还没有待展示的结果</view>
     <view class="section-subtitle">先回到首页写下一段感受，我们再生成关键词和情绪日记。</view>
-    <button class="primary-btn" bindtap="backToInput">返回首页</button>
+    <button class="primary-btn top-gap-lg" bindtap="backToInput">返回首页</button>
   </view>
 </view>

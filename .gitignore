@@ -4,3 +4,4 @@ miniprogram_npm/
 dist/
 .DS_Store
 Thumbs.db
+server/.env
