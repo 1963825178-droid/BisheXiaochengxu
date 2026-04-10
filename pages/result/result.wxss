@@ -1,0 +1,39 @@
+.result-hero {
+  text-align: center;
+}
+
+.result-main {
+  margin-top: 18rpx;
+  font-size: 82rpx;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #27443a;
+}
+
+.result-tags {
+  justify-content: center;
+  margin-top: 24rpx;
+}
+
+.detail-list {
+  margin-top: 24rpx;
+}
+
+.analysis-text {
+  margin-top: 18rpx;
+}
+
+.risk-card {
+  border-color: rgba(184, 103, 89, 0.18);
+  background: linear-gradient(180deg, rgba(255, 247, 244, 0.96), rgba(255, 251, 247, 0.96));
+}
+
+.risk-note {
+  margin-top: 18rpx;
+  padding: 18rpx 20rpx;
+  border-radius: 18rpx;
+  background: rgba(184, 103, 89, 0.08);
+  font-size: 24rpx;
+  line-height: 1.7;
+  color: #8e5b4f;
+}

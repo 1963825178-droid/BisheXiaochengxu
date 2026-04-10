@@ -1,0 +1,75 @@
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18rpx;
+}
+
+.calendar-title {
+  font-size: 42rpx;
+  text-align: center;
+}
+
+.month-switch {
+  min-width: 120rpx;
+  height: 70rpx;
+  line-height: 70rpx;
+  border-radius: 999rpx;
+  padding: 0 24rpx;
+  background: rgba(255, 250, 243, 0.8);
+  color: #4c625a;
+  font-size: 26rpx;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 12rpx;
+}
+
+.week-row {
+  margin-bottom: 14rpx;
+}
+
+.week-cell {
+  text-align: center;
+  font-size: 24rpx;
+  color: #8e928e;
+}
+
+.day-cell {
+  min-height: 128rpx;
+  padding: 16rpx 10rpx;
+  box-sizing: border-box;
+  border-radius: 22rpx;
+  background: rgba(249, 245, 239, 0.8);
+}
+
+.day-cell--muted {
+  opacity: 0.34;
+}
+
+.day-cell--selected {
+  background: linear-gradient(180deg, rgba(242, 225, 202, 0.96), rgba(255, 249, 241, 0.96));
+  box-shadow: inset 0 0 0 2rpx rgba(197, 145, 92, 0.22);
+}
+
+.day-number {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #385148;
+}
+
+.day-dot {
+  margin-top: 18rpx;
+  display: inline-flex;
+  padding: 8rpx 14rpx;
+  border-radius: 999rpx;
+  background: rgba(62, 97, 86, 0.1);
+  color: #3d6156;
+  font-size: 20rpx;
+}
+
+.empty-inline {
+  margin-top: 20rpx;
+}

@@ -1,0 +1,207 @@
+page {
+  min-height: 100%;
+  background:
+    radial-gradient(circle at top, #f9f1e5 0%, #f6efe7 36%, #f3eee8 100%);
+  color: #2d3a36;
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+.page-shell {
+  padding: 28rpx 28rpx 40rpx;
+}
+
+.hero-card,
+.surface-card,
+.journal-card {
+  background: rgba(255, 252, 247, 0.96);
+  border: 1rpx solid rgba(139, 114, 77, 0.08);
+  border-radius: 28rpx;
+  box-shadow: 0 18rpx 50rpx rgba(101, 85, 59, 0.07);
+}
+
+.hero-card {
+  padding: 34rpx 30rpx;
+  background:
+    linear-gradient(135deg, rgba(244, 224, 198, 0.95), rgba(255, 249, 241, 0.98));
+}
+
+.surface-card {
+  padding: 28rpx;
+  margin-top: 24rpx;
+}
+
+.section-title {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #2c3934;
+}
+
+.section-subtitle {
+  margin-top: 10rpx;
+  font-size: 24rpx;
+  line-height: 1.7;
+  color: #6d756f;
+}
+
+.headline {
+  font-size: 46rpx;
+  line-height: 1.35;
+  font-weight: 700;
+  color: #24312e;
+}
+
+.body-text {
+  font-size: 28rpx;
+  line-height: 1.8;
+  color: #43514c;
+}
+
+.muted-text {
+  font-size: 24rpx;
+  color: #7d837f;
+}
+
+.primary-btn,
+.secondary-btn,
+.ghost-btn {
+  height: 92rpx;
+  line-height: 92rpx;
+  border-radius: 999rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  padding: 0;
+}
+
+.primary-btn {
+  background: linear-gradient(135deg, #2f5d50, #4f8473);
+  color: #fefcf7;
+  box-shadow: 0 14rpx 30rpx rgba(47, 93, 80, 0.24);
+}
+
+.primary-btn[disabled] {
+  background: #c2c8c5;
+  color: #f4f4f4;
+  box-shadow: none;
+}
+
+.secondary-btn {
+  background: #efe2cf;
+  color: #4b4a40;
+}
+
+.ghost-btn {
+  background: transparent;
+  color: #4d665e;
+  border: 1rpx solid rgba(77, 102, 94, 0.2);
+}
+
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.emotion-tag,
+.soft-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12rpx 22rpx;
+  border-radius: 999rpx;
+  font-size: 24rpx;
+}
+
+.emotion-tag {
+  background: rgba(244, 226, 205, 0.9);
+  color: #775a35;
+}
+
+.soft-tag {
+  background: rgba(64, 94, 84, 0.08);
+  color: #436157;
+}
+
+.info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18rpx;
+}
+
+.info-item {
+  padding: 22rpx;
+  border-radius: 22rpx;
+  background: rgba(243, 239, 232, 0.7);
+}
+
+.info-label {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #927352;
+}
+
+.info-value {
+  margin-top: 10rpx;
+  font-size: 28rpx;
+  line-height: 1.7;
+  color: #394640;
+}
+
+.page-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 18rpx;
+  margin-top: 26rpx;
+}
+
+.journal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18rpx;
+  margin-top: 24rpx;
+}
+
+.recent-card {
+  padding: 24rpx;
+}
+
+.journal-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24rpx;
+}
+
+.journal-main {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #27443a;
+}
+
+.journal-keywords {
+  margin-top: 12rpx;
+  font-size: 25rpx;
+  color: #8d6b43;
+}
+
+.journal-snippet {
+  margin-top: 16rpx;
+  font-size: 27rpx;
+  line-height: 1.7;
+  color: #4a5753;
+}
+
+.diary-box {
+  margin-top: 18rpx;
+  padding: 24rpx;
+  border-radius: 24rpx;
+  background: rgba(242, 235, 225, 0.82);
+  font-size: 28rpx;
+  line-height: 1.9;
+  color: #42504a;
+  white-space: pre-line;
+}
+
+.empty-state {
+  padding: 64rpx 28rpx;
+  text-align: center;
+}

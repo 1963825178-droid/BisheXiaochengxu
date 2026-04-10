@@ -1,0 +1,53 @@
+<view class="page-shell">
+  <block wx:if="{{journal}}">
+    <view class="hero-card">
+      <view class="muted-text">保存时间</view>
+      <view class="headline">{{journal.mainEmotion}}</view>
+      <view class="section-subtitle">{{journal.displayDateTime}}</view>
+      <view class="tag-row detail-tags">
+        <view class="emotion-tag">{{journal.mainEmotion}}</view>
+        <view wx:for="{{journal.subEmotions}}" wx:key="*this" class="soft-tag">{{item}}</view>
+      </view>
+    </view>
+
+    <view class="surface-card">
+      <view class="section-title">你的记录</view>
+      <view class="body-text top-gap">{{journal.sourceText}}</view>
+    </view>
+
+    <view class="surface-card">
+      <view class="section-title">关键词与解释</view>
+      <view class="info-list top-gap">
+        <view wx:for="{{explanationPairs}}" wx:key="emotion" class="info-item">
+          <view class="info-label">{{item.emotion}}</view>
+          <view class="info-value">{{item.description}}</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="surface-card">
+      <view class="section-title">情绪解析</view>
+      <view class="body-text top-gap">{{journal.analysis}}</view>
+    </view>
+
+    <view class="surface-card">
+      <view class="section-title">生成的情绪日记</view>
+      <view class="diary-box">{{journal.diaryText}}</view>
+    </view>
+
+    <view class="surface-card">
+      <view class="section-title">{{suggestionTitle}}</view>
+      <view class="body-text top-gap">{{journal.suggestion}}</view>
+    </view>
+
+    <view class="page-actions">
+      <button class="secondary-btn" bindtap="goHome">回到首页继续记录</button>
+    </view>
+  </block>
+
+  <view wx:else class="surface-card empty-state">
+    <view class="section-title">没有找到这条日记</view>
+    <view class="section-subtitle">可能是参数缺失，或者这条模拟数据还没有生成。</view>
+    <button class="primary-btn" bindtap="goHome">回到首页</button>
+  </view>
+</view>

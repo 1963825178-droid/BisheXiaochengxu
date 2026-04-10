@@ -1,0 +1,94 @@
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18rpx;
+}
+
+.calendar-title {
+  font-size: 42rpx;
+  text-align: center;
+}
+
+.month-switch {
+  min-width: 120rpx;
+  height: 70rpx;
+  line-height: 70rpx;
+  border-radius: 999rpx;
+  padding: 0 24rpx;
+  background: rgba(255, 250, 243, 0.8);
+  color: #4c625a;
+  font-size: 26rpx;
+}
+
+.top-gap {
+  margin-top: 18rpx;
+}
+
+.bar-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.bar-item {
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+}
+
+.bar-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.bar-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #30423d;
+}
+
+.bar-track {
+  height: 18rpx;
+  border-radius: 999rpx;
+  background: rgba(88, 101, 95, 0.1);
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 999rpx;
+}
+
+.ratio-card {
+  padding: 22rpx;
+  border-radius: 24rpx;
+  background: rgba(248, 243, 235, 0.82);
+}
+
+.ratio-track {
+  display: flex;
+  width: 100%;
+  height: 22rpx;
+  border-radius: 999rpx;
+  overflow: hidden;
+  background: rgba(105, 119, 112, 0.12);
+}
+
+.ratio-positive {
+  height: 100%;
+  background: linear-gradient(90deg, #d9b06c, #e8cb93);
+}
+
+.ratio-negative {
+  height: 100%;
+  background: linear-gradient(90deg, #5b7a70, #7e968d);
+}
+
+.ratio-labels {
+  display: flex;
+  justify-content: space-between;
+  gap: 16rpx;
+  margin-top: 18rpx;
+}

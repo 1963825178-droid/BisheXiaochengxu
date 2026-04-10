@@ -1,0 +1,70 @@
+<view class="page-shell">
+  <view class="hero-card">
+    <view class="headline">这一刻，你想怎么描述自己？</view>
+    <view class="section-subtitle">随便写点什么，我来帮你找到更准确的情绪。</view>
+  </view>
+
+  <view class="surface-card">
+    <view class="section-title">自由输入</view>
+    <view class="section-subtitle">写下刚刚发生的事，或者你现在的感受。不用整理逻辑，直接写就好。</view>
+    <textarea
+      class="entry-box"
+      maxlength="400"
+      placeholder="写下刚刚发生的事，或者你现在的感受&#10;不用整理逻辑，直接写就好"
+      placeholder-class="entry-placeholder"
+      value="{{inputText}}"
+      bindinput="handleInput"
+    />
+    <button class="primary-btn" disabled="{{!canSubmit}}" bindtap="submitText">帮我找到关键词</button>
+  </view>
+
+  <view class="surface-card">
+    <view class="section-title">快速试跑</view>
+    <view class="section-subtitle">先用模拟场景体验第一阶段流程。</view>
+    <view class="chip-list">
+      <view
+        wx:for="{{examples}}"
+        wx:key="*this"
+        class="example-chip"
+        data-text="{{item}}"
+        bindtap="fillExample"
+      >
+        {{item}}
+      </view>
+    </view>
+  </view>
+
+  <view class="surface-card">
+    <view class="section-title">功能入口</view>
+    <view class="shortcut-grid">
+      <view class="shortcut-card" bindtap="goCalendar">
+        <view class="shortcut-title">日历记录</view>
+        <view class="shortcut-desc">按月查看哪些天保存过情绪日记</view>
+      </view>
+      <view class="shortcut-card" bindtap="goStats">
+        <view class="shortcut-title">月度统计</view>
+        <view class="shortcut-desc">看高频情绪和本月状态分布</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="surface-card">
+    <view class="section-title">最近保存</view>
+    <view class="journal-list">
+      <view
+        wx:for="{{recentJournals}}"
+        wx:key="id"
+        class="journal-card recent-card"
+        data-id="{{item.id}}"
+        bindtap="openDetail"
+      >
+        <view class="journal-topline">
+          <view class="journal-main">{{item.mainEmotion}}</view>
+          <view class="muted-text">{{item.displayDateTime}}</view>
+        </view>
+        <view class="journal-keywords">{{item.keywordLine}}</view>
+        <view class="journal-snippet">{{item.sourceText}}</view>
+      </view>
+    </view>
+  </view>
+</view>

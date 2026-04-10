@@ -1,0 +1,61 @@
+<view class="page-shell">
+  <view class="hero-card">
+    <view class="calendar-header">
+      <button class="month-switch" data-delta="-1" bindtap="changeMonth">上月</button>
+      <view>
+        <view class="headline calendar-title">{{monthLabel}}</view>
+        <view class="section-subtitle">本月已保存 {{totalEntries}} 条情绪日记</view>
+      </view>
+      <button class="month-switch" data-delta="1" bindtap="changeMonth">下月</button>
+    </view>
+  </view>
+
+  <view class="surface-card">
+    <view class="calendar-grid week-row">
+      <view wx:for="{{weekLabels}}" wx:key="*this" class="week-cell">{{item}}</view>
+    </view>
+    <view class="calendar-grid">
+      <view
+        wx:for="{{cells}}"
+        wx:key="dateKey"
+        class="day-cell {{item.isCurrentMonth ? '' : 'day-cell--muted'}} {{item.dateKey === selectedDateKey ? 'day-cell--selected' : ''}}"
+        data-date-key="{{item.dateKey}}"
+        data-is-current-month="{{item.isCurrentMonth}}"
+        bindtap="selectDay"
+      >
+        <view class="day-number">{{item.day}}</view>
+        <view wx:if="{{item.hasEntry}}" class="day-dot">{{item.count}}条</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="surface-card">
+    <view class="section-title">{{selectedTitle}}</view>
+
+    <view wx:if="{{selectedEntries.length}}" class="journal-list">
+      <view
+        wx:for="{{selectedEntries}}"
+        wx:key="id"
+        class="journal-card recent-card"
+        data-id="{{item.id}}"
+        bindtap="openDetail"
+      >
+        <view class="journal-topline">
+          <view class="journal-main">{{item.mainEmotion}}</view>
+          <view class="muted-text">{{item.displayDateTime}}</view>
+        </view>
+        <view class="journal-keywords">{{item.keywordLine}}</view>
+        <view class="journal-snippet">{{item.sourceText}}</view>
+      </view>
+    </view>
+
+    <view wx:else class="empty-inline">
+      <view class="section-subtitle">这一天还没有保存的情绪日记，先回首页写下第一条也可以。</view>
+    </view>
+  </view>
+
+  <view class="page-actions">
+    <button class="secondary-btn" bindtap="goStats">查看本月统计</button>
+    <button class="ghost-btn" bindtap="goHome">回到首页</button>
+  </view>
+</view>

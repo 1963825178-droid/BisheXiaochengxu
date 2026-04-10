@@ -1,0 +1,53 @@
+<view class="page-shell">
+  <block wx:if="{{result}}">
+    <view class="hero-card result-hero">
+      <view class="muted-text">主情绪</view>
+      <view class="result-main">{{result.mainEmotion}}</view>
+      <view class="section-subtitle">{{result.displayDateTime}}</view>
+      <view class="tag-row result-tags">
+        <view wx:for="{{result.subEmotions}}" wx:key="*this" class="emotion-tag">{{item}}</view>
+      </view>
+    </view>
+
+    <view class="surface-card">
+      <view class="section-title">情绪解释</view>
+      <view class="info-list detail-list">
+        <view wx:for="{{explanationPairs}}" wx:key="emotion" class="info-item">
+          <view class="info-label">{{item.emotion}}</view>
+          <view class="info-value">{{item.description}}</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="surface-card">
+      <view class="section-title">情绪解析</view>
+      <view class="body-text analysis-text">{{result.analysis}}</view>
+    </view>
+
+    <view class="surface-card">
+      <view class="section-title">自动生成的情绪日记</view>
+      <view class="diary-box">{{result.diaryText}}</view>
+    </view>
+
+    <view class="surface-card {{result.isHighRisk ? 'risk-card' : ''}}">
+      <view class="section-title">{{suggestionTitle}}</view>
+      <view class="body-text">{{result.suggestion}}</view>
+      <view wx:if="{{result.isHighRisk}}" class="risk-note">
+        说明：这里不会做诊断，只提醒你先联系现实支持资源，优先保证安全。
+      </view>
+    </view>
+
+    <view class="page-actions">
+      <button class="primary-btn" disabled="{{savedId}}" bindtap="saveJournal">{{saveButtonText}}</button>
+      <button wx:if="{{savedId}}" class="secondary-btn" bindtap="openDetail">查看完整日记</button>
+      <button class="ghost-btn" bindtap="goCalendar">去日历页查看记录</button>
+      <button class="ghost-btn" bindtap="backToInput">重新输入</button>
+    </view>
+  </block>
+
+  <view wx:else class="surface-card empty-state">
+    <view class="section-title">还没有待展示的结果</view>
+    <view class="section-subtitle">先回到首页写下一段感受，我们再生成关键词和情绪日记。</view>
+    <button class="primary-btn" bindtap="backToInput">返回首页</button>
+  </view>
+</view>

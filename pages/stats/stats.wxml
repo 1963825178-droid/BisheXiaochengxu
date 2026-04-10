@@ -1,0 +1,73 @@
+<view class="page-shell">
+  <view class="hero-card">
+    <view class="calendar-header">
+      <button class="month-switch" data-delta="-1" bindtap="changeMonth">上月</button>
+      <view>
+        <view class="headline calendar-title">{{monthLabel}}</view>
+        <view class="section-subtitle">本月共记录 {{totalEntries}} 条情绪日记</view>
+      </view>
+      <button class="month-switch" data-delta="1" bindtap="changeMonth">下月</button>
+    </view>
+  </view>
+
+  <view class="surface-card">
+    <view class="section-title">月度总结</view>
+    <view class="body-text top-gap">{{summary}}</view>
+  </view>
+
+  <view class="surface-card">
+    <view class="section-title">情绪占比</view>
+    <view wx:if="{{topEmotions.length}}" class="bar-list top-gap">
+      <view wx:for="{{topEmotions}}" wx:key="name" class="bar-item">
+        <view class="bar-meta">
+          <view class="bar-name">{{item.name}}</view>
+          <view class="muted-text">{{item.count}} 次</view>
+        </view>
+        <view class="bar-track">
+          <view class="bar-fill" style="width: {{item.percent}}%; background: {{item.color}};"></view>
+        </view>
+      </view>
+    </view>
+    <view wx:else class="section-subtitle top-gap">本月还没有可统计的记录。</view>
+  </view>
+
+  <view class="surface-card">
+    <view class="section-title">整体倾向</view>
+    <view class="ratio-card top-gap">
+      <view class="ratio-track">
+        <view class="ratio-positive" style="width: {{positiveRatio}}%;"></view>
+        <view class="ratio-negative" style="width: {{negativeRatio}}%;"></view>
+      </view>
+      <view class="ratio-labels">
+        <view class="body-text">平稳 / 偏积极 {{positiveRatio}}%</view>
+        <view class="body-text">偏负面 {{negativeRatio}}%</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="surface-card">
+    <view class="section-title">最近几条记录</view>
+    <view wx:if="{{latestEntries.length}}" class="journal-list">
+      <view
+        wx:for="{{latestEntries}}"
+        wx:key="id"
+        class="journal-card recent-card"
+        data-id="{{item.id}}"
+        bindtap="openDetail"
+      >
+        <view class="journal-topline">
+          <view class="journal-main">{{item.mainEmotion}}</view>
+          <view class="muted-text">{{item.displayDateTime}}</view>
+        </view>
+        <view class="journal-keywords">{{item.keywordLine}}</view>
+        <view class="journal-snippet">{{item.sourceText}}</view>
+      </view>
+    </view>
+    <view wx:else class="section-subtitle top-gap">本月还没有保存记录。</view>
+  </view>
+
+  <view class="page-actions">
+    <button class="secondary-btn" bindtap="goCalendar">查看日历</button>
+    <button class="ghost-btn" bindtap="goHome">回到首页</button>
+  </view>
+</view>

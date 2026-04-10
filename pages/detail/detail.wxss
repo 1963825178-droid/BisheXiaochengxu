@@ -1,0 +1,7 @@
+.detail-tags {
+  margin-top: 22rpx;
+}
+
+.top-gap {
+  margin-top: 18rpx;
+}
