@@ -3,7 +3,7 @@ const { SYSTEM_PROMPT, buildUserPrompt } = require('../emotionPrompt');
 
 function extractJsonText(content) {
   if (typeof content === 'string') {
-    return content;
+    return content.trim();
   }
 
   if (Array.isArray(content)) {
@@ -17,7 +17,8 @@ function extractJsonText(content) {
         }
         return '';
       })
-      .join('');
+      .join('')
+      .trim();
   }
 
   return '';
@@ -39,6 +40,7 @@ async function analyze(rawInput) {
     body: JSON.stringify({
       model: AI_MODEL,
       temperature: 0.2,
+      max_tokens: 1200,
       response_format: { type: 'json_object' },
       messages: [
         {

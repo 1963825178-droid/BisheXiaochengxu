@@ -9,9 +9,16 @@ function resolveStatus(code) {
   if (code === 'INVALID_INPUT') {
     return 400;
   }
-  if (code === 'AI_PROVIDER_FAILED' || code === 'AI_RESPONSE_INVALID' || code === 'AI_PROVIDER_NOT_CONFIGURED') {
+
+  if (
+    code === 'AI_PROVIDER_FAILED' ||
+    code === 'AI_RESPONSE_INVALID' ||
+    code === 'AI_PROVIDER_NOT_CONFIGURED' ||
+    code === 'AI_PROVIDER_AUTH_FAILED'
+  ) {
     return 502;
   }
+
   return 500;
 }
 
