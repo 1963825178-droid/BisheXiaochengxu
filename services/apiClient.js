@@ -1,4 +1,4 @@
-const { API_BASE_URL } = require('../config/env');
+const { API_BASE_URL } = require('../utils/runtimeConfig');
 
 function request(options) {
   return new Promise((resolve, reject) => {

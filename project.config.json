@@ -2,6 +2,7 @@
   "appid": "wx52b0aede8920c70d",
   "projectname": "emotion-keyword-prototype",
   "compileType": "miniprogram",
+  "cloudfunctionRoot": "cloudfunctions/",
   "libVersion": "3.7.6",
   "setting": {
     "urlCheck": false,
