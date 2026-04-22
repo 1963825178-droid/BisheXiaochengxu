@@ -1,8 +1,10 @@
 const emotionService = require('../../services/emotionService');
+const journalCloudService = require('../../services/journalCloudService');
+const userService = require('../../services/userService');
 const {
   getPendingAnalysis,
   getPendingRawInput,
-  savePendingAnalysis,
+  markPendingAnalysisSaved,
   setPendingAnalysis
 } = require('../../services/journalStore');
 
@@ -58,7 +60,7 @@ Page({
       explanationPairs: this.buildExplanationPairs(result),
       errorMessage: '',
       savedId: result.savedId || '',
-      saveButtonText: result.savedId ? '已保存到本地' : '保存这条情绪日记',
+      saveButtonText: result.savedId ? '已保存到云端' : '保存这条情绪日记',
       suggestionTitle: result.isHighRisk ? '高风险支持提示' : '轻量疏导',
       sourceLabel: result.source === 'mock' ? '演示结果' : ''
     });
@@ -110,29 +112,40 @@ Page({
     this.applyResult(result);
   },
 
-  saveJournal() {
-    if (this.data.status !== 'succeeded') {
+  async saveJournal() {
+    if (this.data.status !== 'succeeded' || this.data.savedId) {
       return;
     }
 
-    const journal = savePendingAnalysis();
-    if (!journal) {
+    wx.showLoading({
+      title: '保存中'
+    });
+
+    try {
+      await userService.ensureCurrentUser();
+      const journal = await journalCloudService.createJournal(this.data.result);
+      const nextResult = Object.assign({}, this.data.result, { savedId: journal.id });
+      setPendingAnalysis(nextResult);
+      markPendingAnalysisSaved(journal.id);
+
+      this.setData({
+        result: nextResult,
+        savedId: journal.id,
+        saveButtonText: '已保存到云端'
+      });
+
       wx.showToast({
-        title: '当前结果还不能保存',
+        title: '已保存到云端',
+        icon: 'success'
+      });
+    } catch (error) {
+      wx.showToast({
+        title: error.message || '保存失败，请稍后再试',
         icon: 'none'
       });
-      return;
+    } finally {
+      wx.hideLoading();
     }
-
-    this.setData({
-      savedId: journal.id,
-      saveButtonText: '已保存到本地'
-    });
-
-    wx.showToast({
-      title: '已保存到本地',
-      icon: 'success'
-    });
   },
 
   openDetail() {

@@ -1,12 +1,18 @@
 <view class="page-shell">
-  <view class="hero-card">
-    <view class="headline">随意地描述此刻吧</view>
-    <view class="section-subtitle">写点什么，我来帮你找到更准确的情绪</view>
+  <view class="hero-card hero-with-account">
+    <view class="hero-copy">
+      <view class="headline">随意地描述此刻吧</view>
+      <view class="section-subtitle">写点什么，我来帮你找到更准确的情绪</view>
+    </view>
+
+    <view class="account-entry" bindtap="openAccount">
+      <view class="account-avatar">{{accountAvatarText}}</view>
+      <view class="account-label">我的</view>
+    </view>
   </view>
 
   <view class="surface-card">
     <view class="section-title">自由输入</view>
-
     <textarea
       class="entry-box"
       maxlength="400"
@@ -20,7 +26,7 @@
 
   <view class="surface-card">
     <view class="section-title">快速试跑</view>
-    <view class="section-subtitle">先用模拟场景体验第二阶段主流程。</view>
+    <view class="section-subtitle">先用模拟场景体验完整流程。</view>
     <view class="chip-list">
       <view wx:for="{{examples}}" wx:key="*this" class="example-chip" data-text="{{item}}" bindtap="fillExample">
         {{item}}
@@ -37,22 +43,25 @@
       </view>
       <view class="shortcut-card" bindtap="goStats">
         <view class="shortcut-title">月度统计</view>
-        <view class="shortcut-desc">看高频情绪和本月状态分布</view>
+        <view class="shortcut-desc">查看高频情绪和本月状态分布</view>
       </view>
     </view>
   </view>
 
   <view class="surface-card">
     <view class="section-title">最近保存</view>
-    <view class="journal-list">
+    <view wx:if="{{recentJournals.length}}" class="journal-list">
       <view wx:for="{{recentJournals}}" wx:key="id" class="journal-card recent-card" data-id="{{item.id}}" bindtap="openDetail">
         <view class="journal-topline">
           <view class="journal-main">{{item.mainEmotion}}</view>
           <view class="muted-text">{{item.displayDateTime}}</view>
         </view>
-        <view class="journal-keywords">{{item.keywordLine}}</view>
+        <view class="journal-keywords">{{item.keywordLine}}{{item.source === 'mock' ? ' · 演示结果' : ''}}</view>
         <view class="journal-snippet">{{item.rawInput}}</view>
       </view>
+    </view>
+    <view wx:else class="empty-inline">
+      <view class="section-subtitle">还没有云端日记，写下第一条之后这里就会出现最近保存。</view>
     </view>
   </view>
 </view>

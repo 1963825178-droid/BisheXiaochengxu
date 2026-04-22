@@ -37,13 +37,14 @@
     </view>
 
     <view class="page-actions">
+      <button class="danger-btn" bindtap="deleteJournal">删除这条日记</button>
       <button class="secondary-btn" bindtap="goHome">回到首页继续记录</button>
     </view>
   </block>
 
   <view wx:else class="surface-card empty-state">
     <view class="section-title">没有找到这条日记</view>
-    <view class="section-subtitle">可能是参数缺失，或者这条记录还没有生成。</view>
+    <view class="section-subtitle">可能是参数缺失，或者这条记录已经被删除。</view>
     <button class="primary-btn" bindtap="goHome">回到首页</button>
   </view>
 </view>

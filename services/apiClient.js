@@ -28,7 +28,7 @@ function request(options) {
       fail() {
         reject({
           code: 'NETWORK_ERROR',
-          message: '网络连接失败，请确认后端服务已启动'
+          message: '网络连接失败，请确认本地后端服务已经启动'
         });
       }
     });

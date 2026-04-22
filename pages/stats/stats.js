@@ -1,4 +1,5 @@
-const { getMonthlyStats } = require('../../services/journalStore');
+const journalCloudService = require('../../services/journalCloudService');
+const userService = require('../../services/userService');
 
 Page({
   data: {
@@ -24,8 +25,28 @@ Page({
     }
   },
 
-  loadMonth(year, month) {
-    this.setData(getMonthlyStats(year, month));
+  async loadMonth(year, month) {
+    try {
+      await userService.ensureCurrentUser();
+      const stats = await journalCloudService.getMonthStats(year, month);
+      this.setData(stats);
+    } catch (error) {
+      this.setData({
+        year,
+        month,
+        monthLabel: `${year}年${month}月`,
+        totalEntries: 0,
+        summary: '读取月度统计失败，请稍后再试',
+        topEmotions: [],
+        negativeRatio: 0,
+        positiveRatio: 0,
+        latestEntries: []
+      });
+      wx.showToast({
+        title: error.message || '读取月度统计失败，请稍后再试',
+        icon: 'none'
+      });
+    }
   },
 
   changeMonth(event) {
@@ -36,6 +57,10 @@ Page({
 
   openDetail(event) {
     const { id } = event.currentTarget.dataset;
+    if (!id) {
+      return;
+    }
+
     wx.navigateTo({
       url: `/pages/detail/detail?id=${id}`
     });

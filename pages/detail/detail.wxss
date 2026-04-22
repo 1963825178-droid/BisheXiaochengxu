@@ -5,3 +5,15 @@
 .top-gap {
   margin-top: 18rpx;
 }
+
+.danger-btn {
+  height: 92rpx;
+  line-height: 92rpx;
+  border-radius: 999rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  padding: 0;
+  background: rgba(184, 103, 89, 0.1);
+  color: #b86759;
+  border: 1rpx solid rgba(184, 103, 89, 0.18);
+}

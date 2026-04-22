@@ -1,8 +1,9 @@
 const {
   clearPendingAnalysis,
-  getRecentJournals,
   setPendingRawInput
 } = require('../../services/journalStore');
+const journalCloudService = require('../../services/journalCloudService');
+const userService = require('../../services/userService');
 
 Page({
   data: {
@@ -13,13 +14,24 @@ Page({
       '最近什么都没发生，但就是提不起劲',
       '这周要见很重要的人，我期待又有点不安'
     ],
-    recentJournals: []
+    recentJournals: [],
+    accountAvatarText: '我'
   },
 
-  onShow() {
-    this.setData({
-      recentJournals: getRecentJournals(3)
-    });
+  async onShow() {
+    try {
+      const user = await userService.ensureCurrentUser();
+      const recentJournals = await journalCloudService.getRecentJournals(3);
+      this.setData({
+        recentJournals,
+        accountAvatarText: userService.getAccountInitial(user)
+      });
+    } catch (error) {
+      this.setData({
+        recentJournals: [],
+        accountAvatarText: '我'
+      });
+    }
   },
 
   handleInput(event) {
@@ -55,6 +67,12 @@ Page({
     });
   },
 
+  openAccount() {
+    wx.navigateTo({
+      url: '/pages/account/account'
+    });
+  },
+
   goCalendar() {
     wx.navigateTo({
       url: '/pages/calendar/calendar'
@@ -69,6 +87,10 @@ Page({
 
   openDetail(event) {
     const { id } = event.currentTarget.dataset;
+    if (!id) {
+      return;
+    }
+
     wx.navigateTo({
       url: `/pages/detail/detail?id=${id}`
     });
