@@ -5,7 +5,7 @@
       <view class="headline">{{journal.mainEmotion}}</view>
       <view class="section-subtitle">{{journal.displayDateTime}}</view>
       <view class="tag-row detail-tags">
-        <view class="soft-tag">{{sourceLabel}}</view>
+        <view wx:if="{{sourceLabel}}" class="soft-tag">{{sourceLabel}}</view>
         <view class="emotion-tag">{{journal.mainEmotion}}</view>
         <view wx:for="{{journal.subEmotions}}" wx:key="*this" class="soft-tag">{{item}}</view>
       </view>
@@ -29,11 +29,6 @@
     <view class="surface-card">
       <view class="section-title">情绪解析</view>
       <view class="body-text top-gap">{{journal.analysis}}</view>
-    </view>
-
-    <view class="surface-card">
-      <view class="section-title">生成的情绪日记</view>
-      <view class="diary-box">{{journal.diaryText}}</view>
     </view>
 
     <view class="surface-card">

@@ -38,7 +38,7 @@
           <view class="journal-main">{{item.mainEmotion}}</view>
           <view class="muted-text">{{item.displayDateTime}}</view>
         </view>
-        <view class="journal-keywords">{{item.keywordLine}} · {{item.source === 'mock' ? '演示结果' : '真实分析'}}</view>
+        <view class="journal-keywords">{{item.keywordLine}}{{item.source === 'mock' ? ' · 演示结果' : ''}}</view>
         <view class="journal-snippet">{{item.rawInput}}</view>
       </view>
     </view>

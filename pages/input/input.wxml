@@ -1,16 +1,16 @@
 <view class="page-shell">
   <view class="hero-card">
-    <view class="headline">这一刻，你想怎么描述自己？</view>
-    <view class="section-subtitle">随便写点什么，我来帮你找到更准确的情绪。</view>
+    <view class="headline">随意地描述此刻吧</view>
+    <view class="section-subtitle">写点什么，我来帮你找到更准确的情绪</view>
   </view>
 
   <view class="surface-card">
     <view class="section-title">自由输入</view>
-    <view class="section-subtitle">写下刚刚发生的事，或者你现在的感受。不用整理逻辑，直接写就好。</view>
+
     <textarea
       class="entry-box"
       maxlength="400"
-      placeholder="写下刚刚发生的事，或者你现在的感受&#10;不用整理逻辑，直接写就好"
+      placeholder="写下刚刚发生的事，或者你现在的感受；不用整理逻辑，直接写就好"
       placeholder-class="entry-placeholder"
       value="{{inputText}}"
       bindinput="handleInput"

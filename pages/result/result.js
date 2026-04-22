@@ -60,7 +60,7 @@ Page({
       savedId: result.savedId || '',
       saveButtonText: result.savedId ? '已保存到本地' : '保存这条情绪日记',
       suggestionTitle: result.isHighRisk ? '高风险支持提示' : '轻量疏导',
-      sourceLabel: result.source === 'mock' ? '演示结果' : '真实分析'
+      sourceLabel: result.source === 'mock' ? '演示结果' : ''
     });
   },
 

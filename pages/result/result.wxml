@@ -1,6 +1,6 @@
 <view class="page-shell">
   <view wx:if="{{status === 'analyzing'}}" class="surface-card loading-card">
-    <view class="section-title">正在分析中</view>
+    <view class="section-title">分析中</view>
     <view class="section-subtitle">正在调用后端情绪分析服务，请稍等片刻。</view>
     <view class="loading-wrap">
       <view class="loading-dot"></view>
@@ -25,7 +25,7 @@
       <view class="result-main">{{result.mainEmotion}}</view>
       <view class="section-subtitle">{{result.displayDateTime}}</view>
       <view class="tag-row result-tags">
-        <view class="soft-tag source-tag">{{sourceLabel}}</view>
+        <view wx:if="{{sourceLabel}}" class="soft-tag source-tag">{{sourceLabel}}</view>
         <view wx:for="{{result.subEmotions}}" wx:key="*this" class="emotion-tag">{{item}}</view>
       </view>
     </view>
@@ -48,11 +48,6 @@
     <view class="surface-card">
       <view class="section-title">情绪解析</view>
       <view class="body-text analysis-text">{{result.analysis}}</view>
-    </view>
-
-    <view class="surface-card">
-      <view class="section-title">自动生成的情绪日记</view>
-      <view class="diary-box">{{result.diaryText}}</view>
     </view>
 
     <view class="surface-card {{result.isHighRisk ? 'risk-card' : ''}}">
