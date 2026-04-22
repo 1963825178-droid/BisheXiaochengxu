@@ -1,12 +1,13 @@
 .account-hero {
   display: flex;
   align-items: center;
-  gap: 24rpx;
+  gap: 18rpx;
+  padding: 24rpx 24rpx;
 }
 
-.large-avatar {
-  width: 132rpx;
-  height: 132rpx;
+.compact-avatar {
+  width: 88rpx;
+  height: 88rpx;
   flex-shrink: 0;
 }
 
@@ -15,16 +16,55 @@
   min-width: 0;
 }
 
+.avatar-picker {
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: none;
+  line-height: normal;
+}
+
+.avatar-picker::after {
+  border: none;
+}
+
 .account-avatar {
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, rgba(71, 116, 101, 0.2), rgba(255, 251, 245, 0.96));
-  border: 1rpx solid rgba(71, 116, 101, 0.15);
-  font-size: 42rpx;
+  background:
+    radial-gradient(circle at 30% 24%, rgba(237, 237, 165, 0.36) 0%, rgba(237, 237, 165, 0) 32%),
+    linear-gradient(145deg, rgba(238, 243, 213, 0.94), rgba(124, 180, 163, 0.88));
+  border: 1rpx solid rgba(79, 110, 78, 0.14);
+  box-shadow: 0 10rpx 22rpx rgba(79, 110, 78, 0.1);
+  font-size: 32rpx;
   font-weight: 700;
-  color: #32564b;
+  color: #4f6e4e;
+}
+
+.account-avatar-image {
+  border-radius: 50%;
+  display: block;
+  overflow: hidden;
+  border: 1rpx solid rgba(79, 110, 78, 0.14);
+  box-shadow: 0 10rpx 22rpx rgba(79, 110, 78, 0.1);
+}
+
+.nickname-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 60rpx;
+  margin-top: 12rpx;
+  padding: 0 20rpx;
+  border-radius: 999rpx;
+  background: rgba(248, 248, 220, 0.82);
+  border: 1rpx solid rgba(79, 110, 78, 0.12);
+  color: #476246;
+  font-size: 28rpx;
+  font-weight: 700;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .top-gap {
@@ -42,18 +82,79 @@
   min-height: 180rpx;
   padding: 24rpx;
   border-radius: 24rpx;
-  background: linear-gradient(180deg, rgba(255, 251, 245, 0.96), rgba(242, 233, 220, 0.86));
+  background:
+    radial-gradient(circle at top right, rgba(124, 180, 163, 0.18) 0%, rgba(124, 180, 163, 0) 32%),
+    linear-gradient(180deg, rgba(248, 248, 220, 0.92), rgba(240, 239, 194, 0.74));
+  border: 1rpx solid rgba(195, 169, 82, 0.14);
 }
 
 .shortcut-title {
   font-size: 30rpx;
   font-weight: 700;
-  color: #30403b;
+  color: #476246;
 }
 
 .shortcut-desc {
   margin-top: 14rpx;
   font-size: 24rpx;
   line-height: 1.7;
-  color: #6d766f;
+  color: rgba(79, 110, 78, 0.76);
+}
+
+.modal-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 98;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40rpx;
+  background: rgba(49, 67, 54, 0.3);
+  backdrop-filter: blur(10rpx);
+}
+
+.nickname-modal {
+  width: 100%;
+  max-width: 620rpx;
+  padding: 36rpx 30rpx 30rpx;
+  border-radius: 28rpx;
+  background:
+    radial-gradient(circle at 85% 16%, rgba(237, 237, 165, 0.22) 0%, rgba(237, 237, 165, 0) 32%),
+    linear-gradient(180deg, rgba(248, 248, 220, 0.98), rgba(241, 242, 220, 0.94));
+  border: 1rpx solid rgba(79, 110, 78, 0.12);
+  box-shadow: 0 28rpx 72rpx rgba(79, 110, 78, 0.18);
+  box-sizing: border-box;
+}
+
+.modal-title {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #3f5740;
+}
+
+.modal-desc {
+  margin-top: 14rpx;
+  font-size: 25rpx;
+  line-height: 1.7;
+  color: rgba(64, 87, 64, 0.74);
+}
+
+.modal-nickname-input {
+  height: 88rpx;
+  margin-top: 24rpx;
+  padding: 0 24rpx;
+  border-radius: 24rpx;
+  background: rgba(255, 255, 245, 0.92);
+  border: 1rpx solid rgba(79, 110, 78, 0.14);
+  color: #476246;
+  font-size: 30rpx;
+  box-sizing: border-box;
+}
+
+.nickname-placeholder {
+  color: rgba(79, 110, 78, 0.42);
+}
+
+.modal-confirm-btn {
+  margin-top: 24rpx;
 }

@@ -1,4 +1,10 @@
-const { cloneDate, formatDateKey, formatMonthLabel, isSameMonth } = require('../utils/time');
+const {
+  cloneDate,
+  formatDateKey,
+  formatDateTimeValue,
+  formatMonthLabel,
+  isSameMonth
+} = require('../utils/time');
 
 const JOURNAL_STORAGE_KEY = 'emotion-keyword-journals-v2';
 const PENDING_ANALYSIS_KEY = 'emotion-keyword-pending-analysis-v2';
@@ -50,7 +56,8 @@ function buildKeywordLine(journal) {
 function attachJournalMeta(journal) {
   return Object.assign({}, journal, {
     id: journal.id || journal._id || '',
-    keywordLine: buildKeywordLine(journal)
+    keywordLine: buildKeywordLine(journal),
+    displayTimeText: formatDateTimeValue(journal.createdAt)
   });
 }
 
@@ -75,7 +82,6 @@ function ensureLegacyJournalShape(journal) {
     diaryText: journal.diaryText || '',
     createdAt,
     dateKey: journal.dateKey || formatDateKey(createdDate),
-    displayDateTime: journal.displayDateTime || '',
     source: journal.source || 'mock'
   });
 }

@@ -6,7 +6,8 @@
     </view>
 
     <view class="account-entry" bindtap="openAccount">
-      <view class="account-avatar">{{accountAvatarText}}</view>
+      <image wx:if="{{accountAvatarUrl}}" class="account-avatar-image" src="{{accountAvatarUrl}}" mode="aspectFill" />
+      <view wx:else class="account-avatar">{{accountAvatarText}}</view>
       <view class="account-label">我的</view>
     </view>
   </view>
@@ -22,16 +23,6 @@
       bindinput="handleInput"
     />
     <button class="primary-btn" disabled="{{!canSubmit}}" bindtap="submitText">帮我找到关键词</button>
-  </view>
-
-  <view class="surface-card">
-    <view class="section-title">快速试跑</view>
-    <view class="section-subtitle">先用模拟场景体验完整流程。</view>
-    <view class="chip-list">
-      <view wx:for="{{examples}}" wx:key="*this" class="example-chip" data-text="{{item}}" bindtap="fillExample">
-        {{item}}
-      </view>
-    </view>
   </view>
 
   <view class="surface-card">
@@ -54,7 +45,7 @@
       <view wx:for="{{recentJournals}}" wx:key="id" class="journal-card recent-card" data-id="{{item.id}}" bindtap="openDetail">
         <view class="journal-topline">
           <view class="journal-main">{{item.mainEmotion}}</view>
-          <view class="muted-text">{{item.displayDateTime}}</view>
+          <view class="muted-text">{{item.displayTimeText}}</view>
         </view>
         <view class="journal-keywords">{{item.keywordLine}}{{item.source === 'mock' ? ' · 演示结果' : ''}}</view>
         <view class="journal-snippet">{{item.rawInput}}</view>

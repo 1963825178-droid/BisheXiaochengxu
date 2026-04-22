@@ -36,7 +36,7 @@
       <view wx:for="{{selectedEntries}}" wx:key="id" class="journal-card recent-card" data-id="{{item.id}}" bindtap="openDetail">
         <view class="journal-topline">
           <view class="journal-main">{{item.mainEmotion}}</view>
-          <view class="muted-text">{{item.displayDateTime}}</view>
+          <view class="muted-text">{{item.displayTimeText}}</view>
         </view>
         <view class="journal-keywords">{{item.keywordLine}}{{item.source === 'mock' ? ' · 演示结果' : ''}}</view>
         <view class="journal-snippet">{{item.rawInput}}</view>

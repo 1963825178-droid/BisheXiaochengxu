@@ -3,7 +3,7 @@
     <view class="hero-card">
       <view class="muted-text">保存时间</view>
       <view class="headline">{{journal.mainEmotion}}</view>
-      <view class="section-subtitle">{{journal.displayDateTime}}</view>
+      <view class="section-subtitle">{{journal.displayTimeText}}</view>
       <view class="tag-row detail-tags">
         <view wx:if="{{sourceLabel}}" class="soft-tag">{{sourceLabel}}</view>
         <view class="emotion-tag">{{journal.mainEmotion}}</view>

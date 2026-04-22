@@ -1,8 +1,11 @@
 page {
   min-height: 100%;
   background:
-    radial-gradient(circle at top, #f9f1e5 0%, #f6efe7 36%, #f3eee8 100%);
-  color: #2d3a36;
+    radial-gradient(circle at 18% 16%, rgba(237, 237, 165, 0.34) 0%, rgba(237, 237, 165, 0) 28%),
+    radial-gradient(circle at 82% 22%, rgba(195, 169, 82, 0.16) 0%, rgba(195, 169, 82, 0) 24%),
+    radial-gradient(circle at 50% 100%, rgba(124, 180, 163, 0.22) 0%, rgba(124, 180, 163, 0) 38%),
+    linear-gradient(180deg, #d9e7dc 0%, #d4e3d5 18%, #dbe8d7 42%, #ecedd2 72%, #edf0de 100%);
+  color: #2f4336;
   font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
 }
 
@@ -13,16 +16,24 @@ page {
 .hero-card,
 .surface-card,
 .journal-card {
-  background: rgba(255, 252, 247, 0.96);
-  border: 1rpx solid rgba(139, 114, 77, 0.08);
-  border-radius: 28rpx;
-  box-shadow: 0 18rpx 50rpx rgba(101, 85, 59, 0.07);
+  border-radius: 30rpx;
+  border: 1rpx solid rgba(79, 110, 78, 0.1);
+  box-shadow: 0 18rpx 54rpx rgba(79, 110, 78, 0.08);
+  backdrop-filter: blur(10rpx);
 }
 
 .hero-card {
-  padding: 34rpx 30rpx;
+  padding: 36rpx 32rpx;
   background:
-    linear-gradient(135deg, rgba(244, 224, 198, 0.95), rgba(255, 249, 241, 0.98));
+    radial-gradient(circle at 85% 20%, rgba(237, 237, 165, 0.28) 0%, rgba(237, 237, 165, 0) 30%),
+    linear-gradient(145deg, rgba(137, 190, 173, 0.95), rgba(124, 180, 163, 0.92) 58%, rgba(113, 168, 150, 0.94) 100%);
+}
+
+.surface-card,
+.journal-card {
+  background:
+    radial-gradient(circle at top right, rgba(237, 237, 165, 0.22) 0%, rgba(237, 237, 165, 0) 26%),
+    linear-gradient(180deg, rgba(249, 249, 232, 0.94), rgba(243, 242, 214, 0.88));
 }
 
 .surface-card {
@@ -33,32 +44,32 @@ page {
 .section-title {
   font-size: 34rpx;
   font-weight: 700;
-  color: #2c3934;
+  color: #405740;
 }
 
 .section-subtitle {
   margin-top: 10rpx;
   font-size: 24rpx;
   line-height: 1.7;
-  color: #6d756f;
+  color: rgba(64, 87, 64, 0.72);
 }
 
 .headline {
   font-size: 46rpx;
   line-height: 1.35;
   font-weight: 700;
-  color: #24312e;
+  color: #3f5740;
 }
 
 .body-text {
   font-size: 28rpx;
   line-height: 1.8;
-  color: #43514c;
+  color: #485a4b;
 }
 
 .muted-text {
   font-size: 24rpx;
-  color: #7d837f;
+  color: rgba(79, 110, 78, 0.64);
 }
 
 .primary-btn,
@@ -73,26 +84,27 @@ page {
 }
 
 .primary-btn {
-  background: linear-gradient(135deg, #2f5d50, #4f8473);
-  color: #fefcf7;
-  box-shadow: 0 14rpx 30rpx rgba(47, 93, 80, 0.24);
+  background: linear-gradient(135deg, #4f6e4e, #6a8f66);
+  color: #f7f5d6;
+  box-shadow: 0 14rpx 32rpx rgba(79, 110, 78, 0.18);
 }
 
 .primary-btn[disabled] {
-  background: #c2c8c5;
-  color: #f4f4f4;
+  background: linear-gradient(135deg, rgba(149, 164, 149, 0.92), rgba(181, 191, 181, 0.92));
+  color: rgba(255, 250, 232, 0.82);
   box-shadow: none;
 }
 
 .secondary-btn {
-  background: #efe2cf;
-  color: #4b4a40;
+  background: rgba(237, 237, 165, 0.86);
+  color: #4f6e4e;
+  border: 1rpx solid rgba(195, 169, 82, 0.26);
 }
 
 .ghost-btn {
-  background: transparent;
-  color: #4d665e;
-  border: 1rpx solid rgba(77, 102, 94, 0.2);
+  background: rgba(255, 255, 255, 0.14);
+  color: #4f6e4e;
+  border: 1rpx solid rgba(79, 110, 78, 0.2);
 }
 
 .tag-row {
@@ -112,13 +124,15 @@ page {
 }
 
 .emotion-tag {
-  background: rgba(244, 226, 205, 0.9);
-  color: #775a35;
+  background: rgba(195, 169, 82, 0.2);
+  color: #7a6935;
+  border: 1rpx solid rgba(195, 169, 82, 0.16);
 }
 
 .soft-tag {
-  background: rgba(64, 94, 84, 0.08);
-  color: #436157;
+  background: rgba(124, 180, 163, 0.14);
+  color: #4f6e4e;
+  border: 1rpx solid rgba(79, 110, 78, 0.12);
 }
 
 .info-list {
@@ -130,20 +144,22 @@ page {
 .info-item {
   padding: 22rpx;
   border-radius: 22rpx;
-  background: rgba(243, 239, 232, 0.7);
+  background:
+    linear-gradient(180deg, rgba(246, 246, 216, 0.86), rgba(238, 241, 217, 0.78));
+  border: 1rpx solid rgba(124, 180, 163, 0.14);
 }
 
 .info-label {
   font-size: 24rpx;
   font-weight: 600;
-  color: #927352;
+  color: #8b7838;
 }
 
 .info-value {
   margin-top: 10rpx;
   font-size: 28rpx;
   line-height: 1.7;
-  color: #394640;
+  color: #44584a;
 }
 
 .page-actions {
@@ -174,30 +190,30 @@ page {
 .journal-main {
   font-size: 34rpx;
   font-weight: 700;
-  color: #27443a;
+  color: #476246;
 }
 
 .journal-keywords {
   margin-top: 12rpx;
   font-size: 25rpx;
-  color: #8d6b43;
+  color: #8b7838;
 }
 
 .journal-snippet {
   margin-top: 16rpx;
   font-size: 27rpx;
   line-height: 1.7;
-  color: #4a5753;
+  color: #4c5f4f;
 }
 
 .diary-box {
   margin-top: 18rpx;
   padding: 24rpx;
   border-radius: 24rpx;
-  background: rgba(242, 235, 225, 0.82);
+  background: rgba(236, 238, 213, 0.88);
   font-size: 28rpx;
   line-height: 1.9;
-  color: #42504a;
+  color: #45584a;
   white-space: pre-line;
 }
 

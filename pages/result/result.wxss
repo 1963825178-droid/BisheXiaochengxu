@@ -7,7 +7,7 @@
   font-size: 82rpx;
   font-weight: 700;
   line-height: 1.2;
-  color: #27443a;
+  color: #405740;
 }
 
 .result-tags {
@@ -16,8 +16,8 @@
 }
 
 .source-tag {
-  background: rgba(50, 85, 74, 0.12);
-  color: #35554a;
+  background: rgba(79, 110, 78, 0.18);
+  color: #4f6e4e;
 }
 
 .detail-list {
@@ -29,18 +29,20 @@
 }
 
 .risk-card {
-  border-color: rgba(184, 103, 89, 0.18);
-  background: linear-gradient(180deg, rgba(255, 247, 244, 0.96), rgba(255, 251, 247, 0.96));
+  border-color: rgba(173, 117, 99, 0.2);
+  background:
+    radial-gradient(circle at top right, rgba(237, 237, 165, 0.18) 0%, rgba(237, 237, 165, 0) 28%),
+    linear-gradient(180deg, rgba(250, 243, 228, 0.96), rgba(247, 236, 221, 0.94));
 }
 
 .risk-note {
   margin-top: 18rpx;
   padding: 18rpx 20rpx;
   border-radius: 18rpx;
-  background: rgba(184, 103, 89, 0.08);
+  background: rgba(173, 117, 99, 0.1);
   font-size: 24rpx;
   line-height: 1.7;
-  color: #8e5b4f;
+  color: #8e644e;
 }
 
 .loading-card {
@@ -60,7 +62,7 @@
   width: 18rpx;
   height: 18rpx;
   border-radius: 50%;
-  background: #4f8473;
+  background: #7cb4a3;
   animation: pulse 1.2s infinite ease-in-out;
 }
 

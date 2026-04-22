@@ -1,6 +1,7 @@
 const emotionService = require('../../services/emotionService');
 const journalCloudService = require('../../services/journalCloudService');
 const userService = require('../../services/userService');
+const { formatDateTimeValue } = require('../../utils/time');
 const {
   getPendingAnalysis,
   getPendingRawInput,
@@ -28,6 +29,7 @@ Page({
 
     const existing = getPendingAnalysis();
     const rawInput = getPendingRawInput();
+
     if (existing && existing.rawInput && (!rawInput || existing.rawInput === rawInput)) {
       this.applyResult(existing);
       return;
@@ -54,15 +56,19 @@ Page({
   },
 
   applyResult(result) {
+    const nextResult = Object.assign({}, result, {
+      displayTimeText: formatDateTimeValue(result.createdAt)
+    });
+
     this.setData({
       status: 'succeeded',
-      result,
-      explanationPairs: this.buildExplanationPairs(result),
+      result: nextResult,
+      explanationPairs: this.buildExplanationPairs(nextResult),
       errorMessage: '',
-      savedId: result.savedId || '',
-      saveButtonText: result.savedId ? '已保存到云端' : '保存这条情绪日记',
-      suggestionTitle: result.isHighRisk ? '高风险支持提示' : '轻量疏导',
-      sourceLabel: result.source === 'mock' ? '演示结果' : ''
+      savedId: nextResult.savedId || '',
+      saveButtonText: nextResult.savedId ? '已保存到云端' : '保存这条情绪日记',
+      suggestionTitle: nextResult.isHighRisk ? '高风险支持提示' : '轻量疏导',
+      sourceLabel: nextResult.source === 'mock' ? '演示结果' : ''
     });
   },
 
@@ -87,7 +93,7 @@ Page({
         status: 'failed',
         result: null,
         explanationPairs: [],
-        errorMessage: error.message || '真实分析暂时不可用，请稍后再试',
+        errorMessage: error.message || '真实分析暂时不可用，请稍后再试。',
         savedId: '',
         sourceLabel: ''
       });
@@ -99,6 +105,7 @@ Page({
     if (!rawInput) {
       return;
     }
+
     this.runAnalysis(rawInput);
   },
 
@@ -107,6 +114,7 @@ Page({
     if (!rawInput) {
       return;
     }
+
     const result = emotionService.analyzeWithMock(rawInput);
     setPendingAnalysis(result);
     this.applyResult(result);
@@ -125,6 +133,7 @@ Page({
       await userService.ensureCurrentUser();
       const journal = await journalCloudService.createJournal(this.data.result);
       const nextResult = Object.assign({}, this.data.result, { savedId: journal.id });
+
       setPendingAnalysis(nextResult);
       markPendingAnalysisSaved(journal.id);
 

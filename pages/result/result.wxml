@@ -23,7 +23,7 @@
     <view class="hero-card result-hero">
       <view class="muted-text">主情绪</view>
       <view class="result-main">{{result.mainEmotion}}</view>
-      <view class="section-subtitle">{{result.displayDateTime}}</view>
+      <view class="section-subtitle">{{result.displayTimeText}}</view>
       <view class="tag-row result-tags">
         <view wx:if="{{sourceLabel}}" class="soft-tag source-tag">{{sourceLabel}}</view>
         <view wx:for="{{result.subEmotions}}" wx:key="*this" class="emotion-tag">{{item}}</view>

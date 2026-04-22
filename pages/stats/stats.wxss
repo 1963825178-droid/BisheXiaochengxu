@@ -16,8 +16,9 @@
   line-height: 70rpx;
   border-radius: 999rpx;
   padding: 0 24rpx;
-  background: rgba(255, 250, 243, 0.8);
-  color: #4c625a;
+  background: rgba(237, 237, 165, 0.76);
+  border: 1rpx solid rgba(195, 169, 82, 0.18);
+  color: #4f6e4e;
   font-size: 26rpx;
 }
 
@@ -46,13 +47,13 @@
 .bar-name {
   font-size: 28rpx;
   font-weight: 600;
-  color: #30423d;
+  color: #476246;
 }
 
 .bar-track {
   height: 18rpx;
   border-radius: 999rpx;
-  background: rgba(88, 101, 95, 0.1);
+  background: rgba(79, 110, 78, 0.1);
   overflow: hidden;
 }
 
@@ -64,7 +65,8 @@
 .ratio-card {
   padding: 22rpx;
   border-radius: 24rpx;
-  background: rgba(248, 243, 235, 0.82);
+  background:
+    linear-gradient(180deg, rgba(248, 248, 222, 0.88), rgba(239, 238, 195, 0.72));
 }
 
 .ratio-track {
@@ -73,17 +75,17 @@
   height: 22rpx;
   border-radius: 999rpx;
   overflow: hidden;
-  background: rgba(105, 119, 112, 0.12);
+  background: rgba(79, 110, 78, 0.1);
 }
 
 .ratio-positive {
   height: 100%;
-  background: linear-gradient(90deg, #d9b06c, #e8cb93);
+  background: linear-gradient(90deg, #c3a952, #e6dd8e);
 }
 
 .ratio-negative {
   height: 100%;
-  background: linear-gradient(90deg, #5b7a70, #7e968d);
+  background: linear-gradient(90deg, #5b7d5c, #7cb4a3);
 }
 
 .ratio-labels {

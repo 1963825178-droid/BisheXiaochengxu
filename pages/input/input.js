@@ -9,41 +9,32 @@ Page({
   data: {
     inputText: '',
     canSubmit: false,
-    examples: [
-      '今天被领导说了，感觉有点委屈但又觉得他说得没错',
-      '最近什么都没发生，但就是提不起劲',
-      '这周要见很重要的人，我期待又有点不安'
-    ],
     recentJournals: [],
-    accountAvatarText: '我'
+    accountAvatarText: '我',
+    accountAvatarUrl: ''
   },
 
   async onShow() {
     try {
       const user = await userService.ensureCurrentUser();
       const recentJournals = await journalCloudService.getRecentJournals(3);
+
       this.setData({
         recentJournals,
-        accountAvatarText: userService.getAccountInitial(user)
+        accountAvatarText: userService.getAccountInitial(user),
+        accountAvatarUrl: user.avatarUrl || ''
       });
     } catch (error) {
       this.setData({
         recentJournals: [],
-        accountAvatarText: '我'
+        accountAvatarText: '我',
+        accountAvatarUrl: ''
       });
     }
   },
 
   handleInput(event) {
     const inputText = event.detail.value;
-    this.setData({
-      inputText,
-      canSubmit: Boolean(inputText.trim())
-    });
-  },
-
-  fillExample(event) {
-    const inputText = event.currentTarget.dataset.text;
     this.setData({
       inputText,
       canSubmit: Boolean(inputText.trim())
@@ -62,6 +53,7 @@ Page({
 
     clearPendingAnalysis();
     setPendingRawInput(text);
+
     wx.navigateTo({
       url: '/pages/result/result'
     });

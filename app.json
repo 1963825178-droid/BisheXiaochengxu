@@ -8,10 +8,10 @@
     "pages/stats/stats"
   ],
   "window": {
-    "navigationBarTitleText": "关键词",
-    "navigationBarBackgroundColor": "#F5EDE2",
+    "navigationBarTitleText": "\u5173\u952e\u8bcd",
+    "navigationBarBackgroundColor": "#D8E5D8",
     "navigationBarTextStyle": "black",
-    "backgroundColor": "#F7F1E8",
+    "backgroundColor": "#D8E5D8",
     "backgroundTextStyle": "light"
   },
   "style": "v2",

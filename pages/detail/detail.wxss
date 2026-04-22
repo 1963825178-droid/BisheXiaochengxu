@@ -13,7 +13,7 @@
   font-size: 30rpx;
   font-weight: 600;
   padding: 0;
-  background: rgba(184, 103, 89, 0.1);
-  color: #b86759;
-  border: 1rpx solid rgba(184, 103, 89, 0.18);
+  background: rgba(170, 111, 92, 0.12);
+  color: #8b5c4b;
+  border: 1rpx solid rgba(170, 111, 92, 0.2);
 }

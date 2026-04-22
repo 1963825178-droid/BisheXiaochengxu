@@ -25,16 +25,29 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, rgba(71, 116, 101, 0.2), rgba(255, 251, 245, 0.96));
-  border: 1rpx solid rgba(71, 116, 101, 0.15);
+  background:
+    radial-gradient(circle at 28% 22%, rgba(237, 237, 165, 0.34) 0%, rgba(237, 237, 165, 0) 34%),
+    linear-gradient(145deg, rgba(242, 245, 214, 0.92), rgba(124, 180, 163, 0.86));
+  border: 1rpx solid rgba(79, 110, 78, 0.12);
+  box-shadow: 0 12rpx 28rpx rgba(79, 110, 78, 0.12);
   font-size: 38rpx;
   font-weight: 700;
-  color: #32564b;
+  color: #4f6e4e;
+}
+
+.account-avatar-image {
+  width: 112rpx;
+  height: 112rpx;
+  border-radius: 50%;
+  display: block;
+  overflow: hidden;
+  border: 1rpx solid rgba(79, 110, 78, 0.14);
+  box-shadow: 0 12rpx 28rpx rgba(79, 110, 78, 0.12);
 }
 
 .account-label {
   font-size: 24rpx;
-  color: #61736c;
+  color: rgba(79, 110, 78, 0.82);
 }
 
 .entry-box {
@@ -44,30 +57,17 @@
   margin: 24rpx 0;
   padding: 24rpx;
   border-radius: 24rpx;
-  background: rgba(255, 255, 255, 0.76);
+  background:
+    linear-gradient(180deg, rgba(251, 251, 236, 0.94), rgba(247, 248, 227, 0.88));
+  border: 1rpx solid rgba(124, 180, 163, 0.16);
+  box-shadow: inset 0 1rpx 0 rgba(255, 255, 255, 0.6);
   font-size: 30rpx;
   line-height: 1.75;
-  color: #31403c;
+  color: #3d5143;
 }
 
 .entry-placeholder {
-  color: #9aa09d;
-}
-
-.chip-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 18rpx;
-  margin-top: 24rpx;
-}
-
-.example-chip {
-  padding: 18rpx 22rpx;
-  border-radius: 24rpx;
-  background: rgba(241, 232, 217, 0.82);
-  font-size: 26rpx;
-  line-height: 1.6;
-  color: #5e5748;
+  color: rgba(79, 110, 78, 0.42);
 }
 
 .shortcut-grid {
@@ -82,20 +82,22 @@
   padding: 24rpx;
   border-radius: 24rpx;
   background:
-    linear-gradient(180deg, rgba(255, 251, 245, 0.96), rgba(242, 233, 220, 0.86));
+    radial-gradient(circle at top right, rgba(124, 180, 163, 0.16) 0%, rgba(124, 180, 163, 0) 34%),
+    linear-gradient(180deg, rgba(248, 248, 221, 0.92), rgba(238, 237, 187, 0.72));
+  border: 1rpx solid rgba(195, 169, 82, 0.12);
 }
 
 .shortcut-title {
   font-size: 30rpx;
   font-weight: 700;
-  color: #30403b;
+  color: #476246;
 }
 
 .shortcut-desc {
   margin-top: 14rpx;
   font-size: 24rpx;
   line-height: 1.7;
-  color: #6d766f;
+  color: rgba(79, 110, 78, 0.76);
 }
 
 .empty-inline {

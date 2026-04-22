@@ -4,7 +4,7 @@ const userService = require('./services/userService');
 
 App({
   globalData: {
-    appName: '关键词',
+    appName: '\u5173\u952e\u8bcd',
     cloudEnvId: CLOUD_ENV_ID,
     currentUser: null
   },
@@ -13,7 +13,7 @@ App({
     initializeStore();
 
     if (!wx.cloud) {
-      console.warn('当前基础库不支持云开发能力，已跳过 wx.cloud.init');
+      console.warn('wx.cloud is unavailable in the current base library');
       return;
     }
 

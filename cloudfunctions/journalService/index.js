@@ -76,7 +76,6 @@ function serializeJournal(doc) {
     diaryText: doc.diaryText || '',
     createdAt: doc.createdAt || '',
     dateKey: doc.dateKey || '',
-    displayDateTime: doc.displayDateTime || '',
     source: doc.source || 'ai',
     keywordLine: buildKeywordLine(doc)
   };
@@ -145,7 +144,6 @@ async function createJournal(openid, payload) {
       source: payload.source || 'ai',
       createdAt: payload.createdAt,
       dateKey: payload.dateKey,
-      displayDateTime: payload.displayDateTime,
       updatedAt: now,
       isDeleted: false,
       deletedAt: ''
@@ -353,7 +351,6 @@ async function migrateLocal(openid, payload) {
         source: journal.source || 'mock',
         createdAt: journal.createdAt,
         dateKey: journal.dateKey,
-        displayDateTime: journal.displayDateTime,
         updatedAt: new Date().toISOString(),
         isDeleted: false,
         deletedAt: ''
