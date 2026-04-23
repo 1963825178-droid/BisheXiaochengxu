@@ -22,7 +22,7 @@ Page({
       this.setData({
         recentJournals,
         accountAvatarText: userService.getAccountInitial(user),
-        accountAvatarUrl: user.avatarUrl || ''
+        accountAvatarUrl: user.avatarDisplayUrl || ''
       });
     } catch (error) {
       this.setData({
@@ -56,6 +56,12 @@ Page({
 
     wx.navigateTo({
       url: '/pages/result/result'
+    });
+  },
+
+  handleAccountAvatarError() {
+    this.setData({
+      accountAvatarUrl: ''
     });
   },
 

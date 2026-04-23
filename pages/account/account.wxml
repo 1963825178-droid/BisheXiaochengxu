@@ -1,14 +1,56 @@
 <view class="page-shell">
   <view class="hero-card account-hero">
-    <button class="avatar-picker compact-avatar" open-type="chooseAvatar" bindchooseavatar="handleChooseAvatar" hover-class="none">
-      <image wx:if="{{avatarPreviewUrl}}" class="account-avatar-image compact-avatar" src="{{avatarPreviewUrl}}" mode="aspectFill" />
-      <view wx:else class="account-avatar compact-avatar">{{accountAvatarText}}</view>
-    </button>
+    <view class="account-profile-row">
+      <view class="avatar-panel">
+        <view class="avatar-visual profile-avatar">
+          <image
+            wx:if="{{avatarPreviewUrl}}"
+            class="account-avatar-image profile-avatar"
+            src="{{avatarPreviewUrl}}"
+            mode="aspectFill"
+            binderror="handleAvatarImageError"
+          />
+          <view wx:else class="account-avatar profile-avatar">{{accountAvatarText}}</view>
+          <button
+            class="avatar-picker-overlay"
+            open-type="chooseAvatar"
+            bindtouchstart="handleAvatarPickerTouchStart"
+            bindtap="handleAvatarPickerTap"
+            bindchooseavatar="handleChooseAvatar"
+            hover-class="none"
+            disabled="{{isAvatarPickerActive || isSavingAvatar}}"
+          />
+        </view>
+      </view>
 
-    <view class="account-copy">
-      <view class="section-title">我的资料</view>
-      <view class="nickname-pill">{{editingNickname || '微信用户'}}</view>
-      <view class="section-subtitle">点击头像以用微信账号登录；本应用承诺不会恶意泄露用户隐私信息。</view>
+      <view class="account-copy">
+        <view class="nickname-shell">
+          <view class="nickname-label-row">
+            <view class="nickname-label">我的昵称</view>
+            <view wx:if="{{isSavingNickname}}" class="nickname-status nickname-status-saving">正在保存昵称</view>
+            <view wx:elif="{{canSubmitNickname}}" class="nickname-status nickname-status-pending">选定后会自动保存</view>
+            <view wx:else class="nickname-status">当前昵称已同步</view>
+          </view>
+          <input
+            class="nickname-input"
+            name="nickname"
+            type="nickname"
+            maxlength="20"
+            placeholder="点击昵称框以设置昵称"
+            placeholder-class="nickname-placeholder"
+            value="{{editingNickname}}"
+            confirm-type="done"
+            disabled="{{isSavingNickname || isSavingAvatar}}"
+            bindinput="handleNicknameInput"
+            bindblur="handleNicknameBlur"
+            bindconfirm="handleNicknameKeyboardConfirm"
+          />
+        </view>
+      </view>
+    </view>
+
+    <view class="section-subtitle account-hint">
+      点击头像以设置头像；点击昵称框以设置昵称；本应用承诺不会恶意泄露用户隐私信息。
     </view>
   </view>
 
@@ -42,32 +84,5 @@
 
   <view class="page-actions">
     <button class="secondary-btn" bindtap="syncLocalJournals">{{syncButtonText}}</button>
-  </view>
-
-  <view wx:if="{{showNicknameModal}}" class="modal-mask" catchtap="noop" catchtouchmove="noop">
-    <view class="nickname-modal" catchtap="noop">
-      <view class="modal-title">确认昵称</view>
-      <view class="modal-desc">你可以自定义昵称。头像和昵称仅用于展示，不影响日记归属。</view>
-      <input
-        class="modal-nickname-input"
-        type="text"
-        maxlength="20"
-        placeholder="请输入你想展示的昵称"
-        placeholder-class="nickname-placeholder"
-        value="{{editingNickname}}"
-        focus="{{nicknameModalFocus}}"
-        confirm-type="done"
-        bindinput="handleNicknameInput"
-        bindconfirm="handleNicknameKeyboardConfirm"
-      />
-      <button
-        class="primary-btn modal-confirm-btn"
-        disabled="{{!canConfirmNickname || isSavingProfile}}"
-        loading="{{isSavingProfile}}"
-        bindtap="handleNicknameModalConfirm"
-      >
-        确认并同步
-      </button>
-    </view>
   </view>
 </view>

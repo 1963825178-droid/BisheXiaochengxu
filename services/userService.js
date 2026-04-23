@@ -1,5 +1,6 @@
 const journalCloudService = require('./journalCloudService');
 const { getMigratableLocalJournals } = require('./journalStore');
+const { CLOUD_ENV_ID } = require('../utils/runtimeConfig');
 
 const DEFAULT_NICKNAME = '\u5fae\u4fe1\u7528\u6237';
 const DEFAULT_INITIAL = '\u6211';
@@ -37,11 +38,87 @@ function normalizeUser(user) {
     openid: safeUser.openid || '',
     nickname: safeUser.nickname || DEFAULT_NICKNAME,
     avatarUrl: safeUser.avatarUrl || '',
+    avatarDisplayUrl: '',
     localMigrationDone: Boolean(safeUser.localMigrationDone),
     journalCount: Number(safeUser.journalCount || 0),
     createdAt: safeUser.createdAt || '',
     lastLoginAt: safeUser.lastLoginAt || ''
   };
+}
+
+function isCloudFileId(value) {
+  return /^cloud:\/\//i.test(String(value || '').trim());
+}
+
+function isLegacyCloudAvatarUrl(value) {
+  return /^https?:\/\/[^/]+\.tcb\.qcloud\.la\/.+/i.test(String(value || '').trim());
+}
+
+function buildFileIdFromLegacyAvatarUrl(avatarUrl) {
+  if (!CLOUD_ENV_ID) {
+    return '';
+  }
+
+  const matched = String(avatarUrl || '').trim().match(/^https?:\/\/([^/]+)\.tcb\.qcloud\.la\/([^?#]+)/i);
+  if (!matched) {
+    return '';
+  }
+
+  const bucketName = matched[1];
+  const cloudPath = matched[2].replace(/^\/+/, '');
+  if (!bucketName || !cloudPath) {
+    return '';
+  }
+
+  return `cloud://${CLOUD_ENV_ID}.${bucketName}/${cloudPath}`;
+}
+
+async function getAvatarTempFileURL(fileID) {
+  if (!fileID) {
+    return '';
+  }
+
+  try {
+    ensureCloudAvailable();
+
+    const response = await wx.cloud.getTempFileURL({
+      fileList: [fileID]
+    });
+
+    const fileList = response && Array.isArray(response.fileList) ? response.fileList : [];
+    const firstFile = fileList.length ? fileList[0] : null;
+    return firstFile && typeof firstFile.tempFileURL === 'string' ? firstFile.tempFileURL : '';
+  } catch (error) {
+    return '';
+  }
+}
+
+async function resolveAvatarDisplayUrl(avatarUrl) {
+  const rawAvatarUrl = String(avatarUrl || '').trim();
+  if (!rawAvatarUrl) {
+    return '';
+  }
+
+  if (isCloudFileId(rawAvatarUrl)) {
+    return getAvatarTempFileURL(rawAvatarUrl);
+  }
+
+  if (isLegacyCloudAvatarUrl(rawAvatarUrl)) {
+    const fileID = buildFileIdFromLegacyAvatarUrl(rawAvatarUrl);
+    if (!fileID) {
+      return '';
+    }
+
+    return getAvatarTempFileURL(fileID);
+  }
+
+  return rawAvatarUrl;
+}
+
+async function hydrateUser(user) {
+  const normalizedUser = normalizeUser(user);
+  normalizedUser.avatarDisplayUrl = await resolveAvatarDisplayUrl(normalizedUser.avatarUrl);
+  return normalizedUser;
 }
 
 function getAccountInitial(user) {
@@ -109,7 +186,7 @@ async function callUserBootstrap(fallbackMessage) {
       };
     }
 
-    return normalizeUser(result.data);
+    return hydrateUser(result.data);
   } catch (error) {
     throw normalizeError(error, fallbackMessage);
   }
@@ -133,7 +210,7 @@ async function callUserProfile(payload, fallbackMessage) {
       };
     }
 
-    return normalizeUser(result.data);
+    return hydrateUser(result.data);
   } catch (error) {
     throw normalizeError(error, fallbackMessage);
   }

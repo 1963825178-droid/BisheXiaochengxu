@@ -6,7 +6,7 @@
     </view>
 
     <view class="account-entry" bindtap="openAccount">
-      <image wx:if="{{accountAvatarUrl}}" class="account-avatar-image" src="{{accountAvatarUrl}}" mode="aspectFill" />
+      <image wx:if="{{accountAvatarUrl}}" class="account-avatar-image" src="{{accountAvatarUrl}}" mode="aspectFill" binderror="handleAccountAvatarError" />
       <view wx:else class="account-avatar">{{accountAvatarText}}</view>
       <view class="account-label">我的</view>
     </view>
