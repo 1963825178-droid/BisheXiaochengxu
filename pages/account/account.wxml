@@ -1,56 +1,100 @@
 <view class="page-shell">
   <view class="hero-card account-hero">
-    <view class="account-profile-row">
-      <view class="avatar-panel">
-        <view class="avatar-visual profile-avatar">
-          <image
-            wx:if="{{avatarPreviewUrl}}"
-            class="account-avatar-image profile-avatar"
-            src="{{avatarPreviewUrl}}"
-            mode="aspectFill"
-            binderror="handleAvatarImageError"
-          />
-          <view wx:else class="account-avatar profile-avatar">{{accountAvatarText}}</view>
-          <button
-            class="avatar-picker-overlay"
-            open-type="chooseAvatar"
-            bindtouchstart="handleAvatarPickerTouchStart"
-            bindtap="handleAvatarPickerTap"
-            bindchooseavatar="handleChooseAvatar"
-            hover-class="none"
-            disabled="{{isAvatarPickerActive || isSavingAvatar}}"
-          />
+    <view wx:if="{{showProfileSkeleton}}" class="profile-state profile-skeleton-state">
+      <view class="account-profile-row">
+        <view class="avatar-panel">
+          <view class="profile-avatar profile-skeleton-circle skeleton-shimmer"></view>
+        </view>
+
+        <view class="account-copy">
+          <view class="nickname-shell skeleton-shell">
+            <view class="nickname-label-row">
+              <view class="skeleton-line skeleton-title-line skeleton-shimmer"></view>
+              <view class="skeleton-line skeleton-badge-line skeleton-shimmer"></view>
+            </view>
+            <view class="skeleton-line skeleton-input-line skeleton-shimmer"></view>
+            <view class="skeleton-line skeleton-note-line skeleton-shimmer"></view>
+          </view>
         </view>
       </view>
 
-      <view class="account-copy">
-        <view class="nickname-shell">
-          <view class="nickname-label-row">
-            <view class="nickname-label">我的昵称</view>
-            <view wx:if="{{isSavingNickname}}" class="nickname-status nickname-status-saving">正在保存昵称</view>
-            <view wx:elif="{{canSubmitNickname}}" class="nickname-status nickname-status-pending">选定后会自动保存</view>
-            <view wx:else class="nickname-status">当前昵称已同步</view>
-          </view>
-          <input
-            class="nickname-input"
-            name="nickname"
-            type="nickname"
-            maxlength="20"
-            placeholder="点击昵称框以设置昵称"
-            placeholder-class="nickname-placeholder"
-            value="{{editingNickname}}"
-            confirm-type="done"
-            disabled="{{isSavingNickname || isSavingAvatar}}"
-            bindinput="handleNicknameInput"
-            bindblur="handleNicknameBlur"
-            bindconfirm="handleNicknameKeyboardConfirm"
-          />
-        </view>
+      <view class="account-hint account-hint-muted">
+        <view class="skeleton-line skeleton-hint-line skeleton-shimmer"></view>
+        <view class="skeleton-line skeleton-hint-line skeleton-hint-short skeleton-shimmer"></view>
       </view>
     </view>
 
-    <view class="section-subtitle account-hint">
-      点击头像以设置头像；点击昵称框以设置昵称；本应用承诺不会恶意泄露用户隐私信息。
+    <view wx:elif="{{hasRefreshError && !hasCachedProfile}}" class="profile-state profile-error-state profile-fade-in">
+      <view class="profile-error-title">暂时没能同步账号资料</view>
+      <view class="profile-error-desc">{{profileErrorText || '请检查网络后重试。'}}</view>
+      <button class="ghost-btn profile-retry-btn" bindtap="retryLoadUserProfile" loading="{{isRefreshingProfile}}">
+        重新加载
+      </button>
+    </view>
+
+    <view wx:else class="profile-state profile-content-state {{!isProfileInteractive ? 'profile-content-disabled' : ''}} profile-fade-in">
+      <view class="account-profile-row">
+        <view class="avatar-panel">
+          <view class="avatar-visual profile-avatar">
+            <image
+              wx:if="{{avatarPreviewUrl}}"
+              class="account-avatar-image profile-avatar"
+              src="{{avatarPreviewUrl}}"
+              mode="aspectFill"
+              binderror="handleAvatarImageError"
+            />
+            <view wx:else class="account-avatar profile-avatar">{{accountAvatarText}}</view>
+            <button
+              class="avatar-picker-overlay"
+              open-type="chooseAvatar"
+              bindtouchstart="handleAvatarPickerTouchStart"
+              bindtap="handleAvatarPickerTap"
+              bindchooseavatar="handleChooseAvatar"
+              hover-class="none"
+              disabled="{{!isProfileInteractive || isAvatarPickerActive || isSavingAvatar || isSavingNickname}}"
+            />
+          </view>
+        </view>
+
+        <view class="account-copy">
+          <view class="nickname-shell">
+            <view class="nickname-label-row">
+              <view class="nickname-heading">
+                <view class="nickname-label">我的昵称</view>
+                <view class="nickname-caption">点击昵称框即可设置或修改</view>
+              </view>
+
+              <view wx:if="{{isRefreshingProfile}}" class="nickname-status nickname-status-syncing">同步中</view>
+              <view wx:elif="{{isSavingNickname || isSavingAvatar}}" class="nickname-status nickname-status-saving">保存中</view>
+              <view wx:elif="{{hasRefreshError}}" class="nickname-status nickname-status-stale">上次资料</view>
+              <view wx:elif="{{canSubmitNickname}}" class="nickname-status nickname-status-pending">选定后自动保存</view>
+              <view wx:else class="nickname-status">已同步</view>
+            </view>
+
+            <input
+              class="nickname-input"
+              name="nickname"
+              type="nickname"
+              maxlength="20"
+              placeholder="点击昵称框以设置昵称"
+              placeholder-class="nickname-placeholder"
+              value="{{editingNickname}}"
+              confirm-type="done"
+              disabled="{{!isProfileInteractive || isSavingNickname || isSavingAvatar}}"
+              bindinput="handleNicknameInput"
+              bindblur="handleNicknameBlur"
+              bindconfirm="handleNicknameKeyboardConfirm"
+            />
+
+            <view wx:if="{{isRefreshingProfile}}" class="profile-inline-note">资料同步完成前暂不可编辑</view>
+            <view wx:elif="{{hasRefreshError}}" class="profile-inline-note profile-inline-note-weak">刷新失败，当前显示的是上次资料</view>
+          </view>
+        </view>
+      </view>
+
+      <view class="section-subtitle account-hint">
+        点击头像以设置头像；点击昵称框以设置昵称；本应用承诺不会恶意泄露用户隐私信息。
+      </view>
     </view>
   </view>
 
@@ -59,11 +103,11 @@
     <view class="info-list top-gap">
       <view class="info-item">
         <view class="info-label">云端日记数量</view>
-        <view class="info-value">{{user ? user.journalCount : 0}} 条</view>
+        <view class="info-value">{{user ? (user.journalCount + ' 条') : (hasRefreshError ? '暂不可用' : '加载中')}}</view>
       </view>
       <view class="info-item">
         <view class="info-label">本地迁移状态</view>
-        <view class="info-value">{{user && user.localMigrationDone ? '已完成' : '待同步'}}</view>
+        <view class="info-value">{{user ? (user.localMigrationDone ? '已完成' : '待同步') : (hasRefreshError ? '暂不可用' : '加载中')}}</view>
       </view>
     </view>
   </view>
@@ -83,6 +127,12 @@
   </view>
 
   <view class="page-actions">
-    <button class="secondary-btn" bindtap="syncLocalJournals">{{syncButtonText}}</button>
+    <button
+      class="secondary-btn"
+      bindtap="syncLocalJournals"
+      disabled="{{!isProfileInteractive || isSavingAvatar || isSavingNickname}}"
+    >
+      {{syncButtonText}}
+    </button>
   </view>
 </view>

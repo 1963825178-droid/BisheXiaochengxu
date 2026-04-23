@@ -1,17 +1,17 @@
 .account-hero {
-  padding: 26rpx 26rpx 24rpx;
+  padding: 28rpx 28rpx 24rpx;
+  overflow: hidden;
+}
+
+.profile-state {
+  position: relative;
 }
 
 .account-profile-row {
   display: flex;
   align-items: stretch;
   gap: 22rpx;
-}
-
-.profile-avatar {
-  width: 132rpx;
-  height: 132rpx;
-  flex-shrink: 0;
+  min-height: 132rpx;
 }
 
 .avatar-panel {
@@ -25,28 +25,33 @@
   flex: 1;
   min-width: 0;
   display: flex;
-  align-items: center;
+  align-items: stretch;
+}
+
+.profile-avatar {
+  width: 132rpx;
+  height: 132rpx;
+  flex-shrink: 0;
+  border-radius: 50%;
 }
 
 .avatar-visual {
   position: relative;
   width: 100%;
   height: 100%;
+  overflow: hidden;
   border-radius: 50%;
 }
 
 .avatar-picker-overlay {
   position: absolute;
   inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   padding: 0;
   margin: 0;
+  border: none;
   border-radius: 50%;
   background: transparent;
   background-color: transparent;
-  border: none;
   line-height: normal;
   box-sizing: border-box;
   opacity: 0;
@@ -61,7 +66,6 @@
 }
 
 .account-avatar {
-  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -76,7 +80,6 @@
 }
 
 .account-avatar-image {
-  border-radius: 50%;
   display: block;
   overflow: hidden;
   border: 1rpx solid rgba(79, 110, 78, 0.14);
@@ -87,8 +90,8 @@
   width: 100%;
   min-width: 0;
   min-height: 132rpx;
-  padding: 20rpx 22rpx;
-  border-radius: 26rpx;
+  padding: 22rpx;
+  border-radius: 28rpx;
   background:
     linear-gradient(180deg, rgba(252, 251, 239, 0.94), rgba(246, 246, 225, 0.8));
   border: 1rpx solid rgba(255, 255, 255, 0.42);
@@ -99,27 +102,40 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  gap: 12rpx;
 }
 
 .nickname-label-row {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
+  gap: 12rpx 16rpx;
   flex-wrap: wrap;
-  gap: 10rpx 14rpx;
-  margin-bottom: 16rpx;
+}
+
+.nickname-heading {
+  flex: 1;
+  min-width: 0;
 }
 
 .nickname-label {
-  font-size: 24rpx;
-  font-weight: 600;
-  color: rgba(64, 87, 64, 0.8);
+  font-size: 26rpx;
   line-height: 1.2;
+  font-weight: 700;
+  color: #405740;
+}
+
+.nickname-caption {
+  margin-top: 8rpx;
+  font-size: 20rpx;
+  line-height: 1.45;
+  color: rgba(64, 87, 64, 0.62);
 }
 
 .nickname-status {
   display: inline-flex;
   align-items: center;
+  align-self: flex-start;
   min-height: 40rpx;
   padding: 0 14rpx;
   border-radius: 999rpx;
@@ -134,23 +150,29 @@
   color: #7a6935;
 }
 
-.nickname-status-saving {
-  background: rgba(124, 180, 163, 0.22);
+.nickname-status-saving,
+.nickname-status-syncing {
+  background: rgba(124, 180, 163, 0.24);
   color: #476246;
+}
+
+.nickname-status-stale {
+  background: rgba(255, 255, 255, 0.38);
+  color: rgba(64, 87, 64, 0.76);
 }
 
 .nickname-input {
   width: 100%;
   min-width: 0;
-  height: 78rpx;
+  height: 82rpx;
   padding: 0 22rpx;
-  border-radius: 18rpx;
-  background: rgba(255, 255, 251, 0.96);
+  border-radius: 20rpx;
+  background: rgba(255, 255, 251, 0.97);
   border: 1rpx solid rgba(79, 110, 78, 0.12);
   color: #476246;
   font-size: 30rpx;
   font-weight: 700;
-  line-height: 78rpx;
+  line-height: 82rpx;
   box-sizing: border-box;
   box-shadow: inset 0 1rpx 0 rgba(255, 255, 255, 0.65);
 }
@@ -159,9 +181,128 @@
   color: rgba(79, 110, 78, 0.44);
 }
 
+.profile-inline-note {
+  font-size: 22rpx;
+  line-height: 1.5;
+  color: rgba(64, 87, 64, 0.8);
+}
+
+.profile-inline-note-weak {
+  color: rgba(64, 87, 64, 0.68);
+}
+
+.profile-content-disabled .avatar-visual,
+.profile-content-disabled .nickname-shell {
+  opacity: 0.82;
+}
+
+.profile-content-disabled .nickname-input {
+  background: rgba(255, 255, 251, 0.82);
+  color: rgba(71, 98, 70, 0.74);
+}
+
 .account-hint {
   margin-top: 18rpx;
   line-height: 1.72;
+}
+
+.account-hint-muted {
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+}
+
+.profile-skeleton-state .nickname-shell {
+  background:
+    linear-gradient(180deg, rgba(251, 250, 236, 0.44), rgba(245, 245, 221, 0.28));
+  border: 1rpx solid rgba(255, 255, 255, 0.2);
+  box-shadow:
+    inset 0 1rpx 0 rgba(255, 255, 255, 0.24),
+    0 10rpx 24rpx rgba(79, 110, 78, 0.05);
+}
+
+.profile-skeleton-circle {
+  background-color: rgba(255, 255, 255, 0.18);
+  box-shadow: 0 12rpx 28rpx rgba(79, 110, 78, 0.08);
+}
+
+.skeleton-shell {
+  gap: 14rpx;
+}
+
+.skeleton-line {
+  border-radius: 999rpx;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.skeleton-title-line {
+  width: 148rpx;
+  height: 28rpx;
+}
+
+.skeleton-badge-line {
+  width: 112rpx;
+  height: 36rpx;
+}
+
+.skeleton-input-line {
+  width: 100%;
+  height: 78rpx;
+  border-radius: 20rpx;
+}
+
+.skeleton-note-line {
+  width: 56%;
+  height: 20rpx;
+}
+
+.skeleton-hint-line {
+  width: 100%;
+  height: 20rpx;
+}
+
+.skeleton-hint-short {
+  width: 72%;
+}
+
+.skeleton-shimmer {
+  background:
+    linear-gradient(110deg, rgba(255, 255, 255, 0.14) 8%, rgba(255, 255, 255, 0.34) 18%, rgba(255, 255, 255, 0.14) 33%);
+  background-size: 220% 100%;
+  animation: skeleton-shimmer 1.25s ease-in-out infinite;
+}
+
+.profile-error-state {
+  min-height: 208rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.profile-error-title {
+  font-size: 32rpx;
+  line-height: 1.3;
+  font-weight: 700;
+  color: #405740;
+}
+
+.profile-error-desc {
+  margin-top: 12rpx;
+  font-size: 24rpx;
+  line-height: 1.75;
+  color: rgba(64, 87, 64, 0.76);
+}
+
+.profile-retry-btn {
+  width: 240rpx;
+  margin-top: 22rpx;
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.34);
+}
+
+.profile-fade-in {
+  animation: profile-fade-in 220ms ease both;
 }
 
 .top-gap {
@@ -196,4 +337,33 @@
   font-size: 24rpx;
   line-height: 1.7;
   color: rgba(79, 110, 78, 0.76);
+}
+
+.page-actions .secondary-btn[disabled] {
+  background: rgba(237, 237, 165, 0.48);
+  color: rgba(79, 110, 78, 0.48);
+  border-color: rgba(195, 169, 82, 0.16);
+  box-shadow: none;
+}
+
+@keyframes skeleton-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+
+  to {
+    background-position: -20% 0;
+  }
+}
+
+@keyframes profile-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8rpx);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
