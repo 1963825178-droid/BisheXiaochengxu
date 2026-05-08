@@ -12,6 +12,8 @@ function resolveStatus(code) {
 
   if (
     code === 'AI_PROVIDER_FAILED' ||
+    code === 'AI_PROVIDER_BUSY' ||
+    code === 'AI_PROVIDER_TIMEOUT' ||
     code === 'AI_RESPONSE_INVALID' ||
     code === 'AI_PROVIDER_NOT_CONFIGURED' ||
     code === 'AI_PROVIDER_AUTH_FAILED'

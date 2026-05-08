@@ -1,6 +1,8 @@
 ﻿const { DEEPSEEK_API_KEY, DEEPSEEK_BASE_URL, DEEPSEEK_MODEL } = require('../../config/env');
 const { SYSTEM_PROMPT, buildUserPrompt } = require('../emotionPrompt');
 
+const PROVIDER_TIMEOUT_MS = 55000;
+
 function extractJsonText(content) {
   if (typeof content !== 'string') {
     return '';
@@ -17,6 +19,14 @@ function extractJsonText(content) {
   return trimmed;
 }
 
+function isProviderBusy(status, message) {
+  return (
+    status === 429 ||
+    status === 503 ||
+    /service is too busy|temporarily switch|too many requests|rate limit|overloaded/i.test(message || '')
+  );
+}
+
 async function analyze(rawInput) {
   if (!DEEPSEEK_API_KEY || !DEEPSEEK_BASE_URL || !DEEPSEEK_MODEL) {
     const error = new Error('DeepSeek provider 灏氭湭瀹屾垚閰嶇疆');
@@ -25,9 +35,14 @@ async function analyze(rawInput) {
   }
 
   let response;
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => {
+    controller.abort();
+  }, PROVIDER_TIMEOUT_MS);
   try {
     response = await fetch(`${DEEPSEEK_BASE_URL.replace(/\/$/, '')}/chat/completions`, {
       method: 'POST',
+      signal: controller.signal,
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${DEEPSEEK_API_KEY}`
@@ -48,14 +63,21 @@ async function analyze(rawInput) {
           type: 'json_object'
         },
         temperature: 0.2,
-        max_tokens: 1200,
+        max_tokens: 900,
         stream: false
       })
     });
   } catch (requestError) {
-    const error = new Error('DeepSeek 鏈嶅姟璇锋眰澶辫触锛岃妫€鏌ョ綉缁滄垨绋嶅悗鍐嶈瘯');
-    error.code = 'AI_PROVIDER_FAILED';
+    const isTimeout = requestError && requestError.name === 'AbortError';
+    const error = new Error(
+      isTimeout
+        ? '真实分析服务响应超时，请稍后重试，或先使用演示分析。'
+        : 'DeepSeek 鏈嶅姟璇锋眰澶辫触锛岃妫€鏌ョ綉缁滄垨绋嶅悗鍐嶈瘯'
+    );
+    error.code = isTimeout ? 'AI_PROVIDER_TIMEOUT' : 'AI_PROVIDER_FAILED';
     throw error;
+  } finally {
+    clearTimeout(timeoutId);
   }
 
   const responseText = await response.text();
@@ -70,8 +92,9 @@ async function analyze(rawInput) {
 
   if (!response.ok) {
     const providerMessage = payload && payload.error && payload.error.message ? payload.error.message : 'DeepSeek 鏈嶅姟璇锋眰澶辫触';
-    const error = new Error(providerMessage);
-    error.code = response.status === 401 || response.status === 403 ? 'AI_PROVIDER_AUTH_FAILED' : 'AI_PROVIDER_FAILED';
+    const busy = isProviderBusy(response.status, providerMessage);
+    const error = new Error(busy ? '真实分析服务当前繁忙，请稍后重试，或先使用演示分析。' : providerMessage);
+    error.code = busy ? 'AI_PROVIDER_BUSY' : response.status === 401 || response.status === 403 ? 'AI_PROVIDER_AUTH_FAILED' : 'AI_PROVIDER_FAILED';
     throw error;
   }
 

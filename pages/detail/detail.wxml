@@ -26,6 +26,15 @@
       </view>
     </view>
 
+    <view wx:if="{{journal.foreignEmotionWord}}" class="surface-card foreign-word-card">
+      <view class="section-title">更贴近的外文词</view>
+      <view class="foreign-word-row">
+        <view class="foreign-word">{{journal.foreignEmotionWord.word}}</view>
+        <view class="soft-tag">{{journal.foreignEmotionWord.language}}</view>
+      </view>
+      <view class="body-text foreign-word-meaning">{{journal.foreignEmotionWord.meaning}}</view>
+    </view>
+
     <view class="surface-card">
       <view class="section-title">情绪解析</view>
       <view class="body-text top-gap">{{journal.analysis}}</view>

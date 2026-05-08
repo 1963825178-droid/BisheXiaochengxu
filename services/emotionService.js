@@ -11,9 +11,29 @@ function normalizeError(error) {
     };
   }
 
+  const rawMessage = [
+    error.message,
+    error.errMsg,
+    error.code,
+    error.errCode
+  ].filter(Boolean).join(' ');
+  if (/function.*time.*limit|functions_time_limit_exceeded|timed out after|time limit exceeded|响应超时/i.test(rawMessage)) {
+    return {
+      code: error.code || 'AI_PROVIDER_TIMEOUT',
+      message: '真实分析服务响应超时，请稍后重试，或先使用演示分析。'
+    };
+  }
+
+  if (/service is too busy|temporarily switch|too many requests|rate limit|overloaded/i.test(rawMessage)) {
+    return {
+      code: error.code || 'AI_PROVIDER_BUSY',
+      message: '真实分析服务当前繁忙，请稍后重试，或先使用演示分析。'
+    };
+  }
+
   return {
     code: error.code || 'UNKNOWN_ERROR',
-    message: error.message || '真实分析暂时不可用，请稍后再试'
+    message: rawMessage || '真实分析暂时不可用，请稍后再试'
   };
 }
 

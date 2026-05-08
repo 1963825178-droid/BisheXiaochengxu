@@ -4,8 +4,9 @@ const SYSTEM_PROMPT = [
   '请严格只输出 JSON 对象，不要输出任何 JSON 之外的文字。',
   '禁止输出心理疾病诊断、治疗承诺、说教式安慰或命令式表达。',
   '请避免只使用“开心、难过、生气”这类过泛词，允许混合情绪与矛盾情绪并存。',
+  '如果用户表达的情绪很难用简短中文精准概括，可以给出一个更贴近的外文情绪词，并提供语种和中文释义；如果没有明显合适词汇，foreignEmotionWord 返回 null。',
   '如果用户内容涉及自伤、自杀、极端绝望，请将 isHighRisk 设为 true，suggestion 使用安全支持导向的表达。',
-  '输出字段必须完整：mainEmotion, subEmotions, explanations, analysis, isNegative, isHighRisk, suggestion。'
+  '输出字段必须完整：mainEmotion, subEmotions, explanations, foreignEmotionWord, analysis, isNegative, isHighRisk, suggestion。'
 ].join('\n');
 
 function buildUserPrompt(rawInput) {
@@ -18,6 +19,11 @@ function buildUserPrompt(rawInput) {
     '  "explanations": {',
     '    "委屈": "你感到被评价或误解，同时又没有完全表达开的空间。",',
     '    "不甘": "你觉得事情本可以更好，所以心里还在拉扯。"',
+    '  },',
+    '  "foreignEmotionWord": {',
+    '    "word": "lítost",',
+    '    "language": "捷克语",',
+    '    "meaning": "一种被伤害后的委屈、羞恼与自怜混在一起的复杂感受。"',
     '  },',
     '  "analysis": "这段表达里有复杂的情绪拉扯。",',
     '  "isNegative": true,',

@@ -16,6 +16,7 @@ const MESSAGE_INVALID_NICKNAME = '\u8bf7\u5148\u586b\u5199\u6635\u79f0';
 
 let currentUser = null;
 let bootstrapPromise = null;
+let migrationPromise = null;
 
 function storeCurrentUser(user) {
   currentUser = user;
@@ -136,14 +137,14 @@ function ensureCloudAvailable() {
 }
 
 function isTimeoutError(error) {
-  const rawCode = error && error.code ? String(error.code).toLowerCase() : '';
-  const rawMessage = error && error.message ? String(error.message).toLowerCase() : '';
+  const rawCode = [error && error.code, error && error.errCode].filter(Boolean).join(' ').toLowerCase();
+  const rawMessage = [error && error.message, error && error.errMsg].filter(Boolean).join(' ').toLowerCase();
   return rawCode.includes('timeout') || rawMessage.includes('timeout') || rawMessage.includes('\u8d85\u65f6');
 }
 
 function isFunctionNotFoundError(error) {
-  const rawCode = error && error.code ? String(error.code).toLowerCase() : '';
-  const rawMessage = error && error.message ? String(error.message).toLowerCase() : '';
+  const rawCode = [error && error.code, error && error.errCode].filter(Boolean).join(' ').toLowerCase();
+  const rawMessage = [error && error.message, error && error.errMsg].filter(Boolean).join(' ').toLowerCase();
   return rawCode.includes('-501000') || rawMessage.includes('function_not_found') || rawMessage.includes('could not be found');
 }
 
@@ -235,6 +236,25 @@ async function runLocalMigrationIfNeeded(user, force) {
   return callUserBootstrap(MESSAGE_SYNC_USER_FAILED);
 }
 
+function runLocalMigrationInBackground(user) {
+  if (!user || user.localMigrationDone || migrationPromise) {
+    return;
+  }
+
+  migrationPromise = runLocalMigrationIfNeeded(user, false)
+    .then((migratedUser) => {
+      storeCurrentUser(migratedUser);
+      return migratedUser;
+    })
+    .catch((error) => {
+      console.warn('local journal migration skipped', error);
+      return user;
+    })
+    .finally(() => {
+      migrationPromise = null;
+    });
+}
+
 async function bootstrapCurrentUser(options) {
   const config = Object.assign(
     {
@@ -255,9 +275,14 @@ async function bootstrapCurrentUser(options) {
   bootstrapPromise = (async () => {
     const user = await callUserBootstrap(MESSAGE_BOOTSTRAP_FAILED);
     storeCurrentUser(user);
-    const migratedUser = await runLocalMigrationIfNeeded(user, config.forceMigration);
-    storeCurrentUser(migratedUser);
-    return migratedUser;
+    if (config.forceMigration) {
+      const migratedUser = await runLocalMigrationIfNeeded(user, true);
+      storeCurrentUser(migratedUser);
+      return migratedUser;
+    }
+
+    runLocalMigrationInBackground(user);
+    return user;
   })();
 
   try {

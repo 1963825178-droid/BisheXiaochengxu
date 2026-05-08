@@ -53,10 +53,31 @@ function buildKeywordLine(journal) {
   return [journal.mainEmotion].concat(journal.subEmotions || []).filter(Boolean).join(' · ');
 }
 
+function normalizeForeignEmotionWord(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    return null;
+  }
+
+  const word = typeof value.word === 'string' ? value.word.trim() : '';
+  const language = typeof value.language === 'string' ? value.language.trim() : '';
+  const meaning = typeof value.meaning === 'string' ? value.meaning.trim() : '';
+
+  if (!word || !language || !meaning) {
+    return null;
+  }
+
+  return {
+    word,
+    language,
+    meaning
+  };
+}
+
 function attachJournalMeta(journal) {
   return Object.assign({}, journal, {
     id: journal.id || journal._id || '',
     keywordLine: buildKeywordLine(journal),
+    foreignEmotionWord: normalizeForeignEmotionWord(journal.foreignEmotionWord),
     displayTimeText: formatDateTimeValue(journal.createdAt)
   });
 }
@@ -75,6 +96,7 @@ function ensureLegacyJournalShape(journal) {
     mainEmotion: journal.mainEmotion || '',
     subEmotions: Array.isArray(journal.subEmotions) ? journal.subEmotions.slice() : [],
     explanations: journal.explanations && typeof journal.explanations === 'object' ? Object.assign({}, journal.explanations) : {},
+    foreignEmotionWord: normalizeForeignEmotionWord(journal.foreignEmotionWord),
     analysis: journal.analysis || '',
     suggestion: journal.suggestion || '',
     isNegative: typeof journal.isNegative === 'boolean' ? journal.isNegative : true,

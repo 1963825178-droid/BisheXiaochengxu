@@ -11,16 +11,41 @@ function toObject(value) {
   return value && typeof value === 'object' && !Array.isArray(value) ? value : {};
 }
 
+function toTrimmedString(value) {
+  return typeof value === 'string' ? value.trim() : '';
+}
+
+function normalizeForeignEmotionWord(value) {
+  const source = toObject(value);
+  const word = toTrimmedString(source.word);
+  const language = toTrimmedString(source.language);
+  const meaning = toTrimmedString(source.meaning);
+
+  if (!word || !language || !meaning) {
+    return null;
+  }
+
+  return {
+    word,
+    language,
+    meaning
+  };
+}
+
 function buildDiaryText(payload) {
   const keywordLine = [payload.mainEmotion].concat(payload.subEmotions).filter(Boolean).join(' | ');
   const suggestionTitle = payload.isHighRisk ? '支持提示' : '此刻可以试试';
+  const foreignWordLine = payload.foreignEmotionWord
+    ? `更贴近的外文词：${payload.foreignEmotionWord.word}（${payload.foreignEmotionWord.language}）：${payload.foreignEmotionWord.meaning}`
+    : '';
 
   return [
     `你的记录：${payload.rawInput}`,
     `关键词：${keywordLine}`,
+    foreignWordLine,
     `情绪解析：${payload.analysis}`,
     `${suggestionTitle}：${payload.suggestion}`
-  ].join('\n');
+  ].filter(Boolean).join('\n');
 }
 
 function ensureExplanations(mainEmotion, subEmotions, explanations) {
@@ -28,7 +53,7 @@ function ensureExplanations(mainEmotion, subEmotions, explanations) {
 
   [mainEmotion].concat(subEmotions).filter(Boolean).forEach((emotion) => {
     if (!safeMap[emotion]) {
-      safeMap[emotion] = `“${emotion}”是这段表达里比较突出的感受，需要结合上下文继续理解。`;
+      safeMap[emotion] = `“${emotion}”在这段表达里比较突出，像是在提醒你：这份感受已经值得被看见。`;
     }
   });
 
@@ -51,6 +76,7 @@ function normalizeEmotionResult(payload, options) {
     mainEmotion,
     subEmotions,
     explanations: ensureExplanations(mainEmotion, subEmotions, toObject(safePayload.explanations)),
+    foreignEmotionWord: normalizeForeignEmotionWord(safePayload.foreignEmotionWord),
     analysis: safePayload.analysis || '这段表达里有比较复杂的情绪拉扯，值得被认真对待。',
     isNegative: typeof safePayload.isNegative === 'boolean' ? safePayload.isNegative : true,
     isHighRisk,

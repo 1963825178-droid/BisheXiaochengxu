@@ -2,6 +2,8 @@ const https = require('https');
 const { DEEPSEEK_API_KEY, DEEPSEEK_BASE_URL, DEEPSEEK_MODEL } = require('../env');
 const { SYSTEM_PROMPT, buildUserPrompt } = require('../emotionPrompt');
 
+const PROVIDER_TIMEOUT_MS = 55000;
+
 function extractJsonText(content) {
   if (typeof content !== 'string') {
     return '';
@@ -18,7 +20,15 @@ function extractJsonText(content) {
   return trimmed;
 }
 
-function requestJson(url, options, body) {
+function isProviderBusy(statusCode, message) {
+  return (
+    statusCode === 429 ||
+    statusCode === 503 ||
+    /service is too busy|temporarily switch|too many requests|rate limit|overloaded/i.test(message || '')
+  );
+}
+
+function requestJson(url, options, body, timeoutMs) {
   return new Promise((resolve, reject) => {
     const req = https.request(url, options, (res) => {
       const chunks = [];
@@ -37,6 +47,11 @@ function requestJson(url, options, body) {
     });
 
     req.on('error', reject);
+    req.setTimeout(timeoutMs, () => {
+      const error = new Error('真实分析服务响应超时，请稍后重试，或先使用演示分析。');
+      error.code = 'AI_PROVIDER_TIMEOUT';
+      req.destroy(error);
+    });
 
     if (body) {
       req.write(body);
@@ -69,7 +84,7 @@ async function analyze(rawInput) {
       type: 'json_object'
     },
     temperature: 0.2,
-    max_tokens: 1200,
+    max_tokens: 900,
     stream: false
   });
 
@@ -85,11 +100,17 @@ async function analyze(rawInput) {
           Authorization: `Bearer ${DEEPSEEK_API_KEY}`
         }
       },
-      requestBody
+      requestBody,
+      PROVIDER_TIMEOUT_MS
     );
   } catch (requestError) {
-    const error = new Error('DeepSeek 服务请求失败，请检查网络或稍后再试');
-    error.code = 'AI_PROVIDER_FAILED';
+    const isTimeout = requestError && requestError.code === 'AI_PROVIDER_TIMEOUT';
+    const error = new Error(
+      isTimeout
+        ? '真实分析服务响应超时，请稍后重试，或先使用演示分析。'
+        : 'DeepSeek 服务请求失败，请检查网络或稍后再试'
+    );
+    error.code = isTimeout ? 'AI_PROVIDER_TIMEOUT' : 'AI_PROVIDER_FAILED';
     throw error;
   }
 
@@ -106,8 +127,11 @@ async function analyze(rawInput) {
     const providerMessage = payload && payload.error && payload.error.message
       ? payload.error.message
       : 'DeepSeek 服务请求失败';
-    const error = new Error(providerMessage);
-    error.code = response.statusCode === 401 || response.statusCode === 403
+    const busy = isProviderBusy(response.statusCode, providerMessage);
+    const error = new Error(busy ? '真实分析服务当前繁忙，请稍后重试，或先使用演示分析。' : providerMessage);
+    error.code = busy
+      ? 'AI_PROVIDER_BUSY'
+      : response.statusCode === 401 || response.statusCode === 403
       ? 'AI_PROVIDER_AUTH_FAILED'
       : 'AI_PROVIDER_FAILED';
     throw error;

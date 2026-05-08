@@ -28,6 +28,26 @@ function buildKeywordLine(journal) {
   return [journal.mainEmotion].concat(journal.subEmotions || []).filter(Boolean).join(' · ');
 }
 
+function normalizeForeignEmotionWord(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    return null;
+  }
+
+  const word = typeof value.word === 'string' ? value.word.trim() : '';
+  const language = typeof value.language === 'string' ? value.language.trim() : '';
+  const meaning = typeof value.meaning === 'string' ? value.meaning.trim() : '';
+
+  if (!word || !language || !meaning) {
+    return null;
+  }
+
+  return {
+    word,
+    language,
+    meaning
+  };
+}
+
 function getEmotionColor(emotion) {
   const palette = {
     委屈: '#C98C5F',
@@ -69,6 +89,7 @@ function serializeJournal(doc) {
     mainEmotion: doc.mainEmotion || '',
     subEmotions: Array.isArray(doc.subEmotions) ? doc.subEmotions : [],
     explanations: doc.explanations && typeof doc.explanations === 'object' ? doc.explanations : {},
+    foreignEmotionWord: normalizeForeignEmotionWord(doc.foreignEmotionWord),
     analysis: doc.analysis || '',
     suggestion: doc.suggestion || '',
     isNegative: typeof doc.isNegative === 'boolean' ? doc.isNegative : true,
@@ -136,6 +157,7 @@ async function createJournal(openid, payload) {
       mainEmotion: payload.mainEmotion,
       subEmotions: Array.isArray(payload.subEmotions) ? payload.subEmotions : [],
       explanations: payload.explanations && typeof payload.explanations === 'object' ? payload.explanations : {},
+      foreignEmotionWord: normalizeForeignEmotionWord(payload.foreignEmotionWord),
       analysis: payload.analysis,
       suggestion: payload.suggestion || '',
       isNegative: typeof payload.isNegative === 'boolean' ? payload.isNegative : true,
@@ -343,6 +365,7 @@ async function migrateLocal(openid, payload) {
         mainEmotion: journal.mainEmotion,
         subEmotions: Array.isArray(journal.subEmotions) ? journal.subEmotions : [],
         explanations: journal.explanations && typeof journal.explanations === 'object' ? journal.explanations : {},
+        foreignEmotionWord: normalizeForeignEmotionWord(journal.foreignEmotionWord),
         analysis: journal.analysis || '',
         suggestion: journal.suggestion || '',
         isNegative: typeof journal.isNegative === 'boolean' ? journal.isNegative : true,

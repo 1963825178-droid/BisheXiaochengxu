@@ -11,6 +11,11 @@ const DEFAULT_TEMPLATE = {
   },
   analysis:
     '这段感受里最明显的是一种说不清的内耗。你未必正被单一事件困住，更像是被许多小压力慢慢拉低了能量。',
+  foreignEmotionWord: {
+    word: 'ennui',
+    language: '法语',
+    meaning: '一种说不清缘由的倦怠、空虚和兴趣减退感。'
+  },
   isNegative: true,
   suggestion:
     '先不要逼自己一次性把原因想清楚。也许可以从一件最小的动作开始，比如喝口水、离开屏幕两分钟。'
@@ -29,6 +34,11 @@ const TEMPLATES = [
     },
     analysis:
       '你在这件事情里既感到被指出问题的不舒服，也隐约知道对方可能不全是错的，于是形成了一种复杂的委屈和内耗。',
+    foreignEmotionWord: {
+      word: 'lítost',
+      language: '捷克语',
+      meaning: '一种被伤害后的委屈、羞恼、自怜和不甘交织在一起的感受。'
+    },
     isNegative: true,
     suggestion:
       '你现在的不舒服是可以理解的，不需要立刻把自己调整成“没事”。先把感受放稳，再决定要不要沟通。'
@@ -45,6 +55,11 @@ const TEMPLATES = [
     },
     analysis:
       '这更像是一种持续性的情绪走低，不一定有明确导火索，却会影响行动感和兴趣感。',
+    foreignEmotionWord: {
+      word: 'acedia',
+      language: '拉丁语',
+      meaning: '一种精神上的倦怠、提不起劲和与生活暂时断开连接的状态。'
+    },
     isNegative: true,
     suggestion:
       '先别把目标放在“重新振作”，把它换成“让自己稍微好一点点”会更温和。'
@@ -61,6 +76,11 @@ const TEMPLATES = [
     },
     analysis:
       '你现在更像是被“未来还没成形”的不确定感包围，所以压力和自我怀疑会一起冒出来。',
+    foreignEmotionWord: {
+      word: 'sehnsucht',
+      language: '德语',
+      meaning: '一种向往未知远方，同时又因尚未抵达而感到空落和焦灼的心情。'
+    },
     isNegative: true,
     suggestion:
       '不必一下子选出终局答案。先把最近一周能推进的一小步列出来，会比一直卡在大方向里更容易缓解压力。'
@@ -77,6 +97,11 @@ const TEMPLATES = [
     },
     analysis:
       '这是一种很典型的混合情绪。你在向前靠近的同时，也担心自己投入后会失望，所以期待和不安会一起存在。',
+    foreignEmotionWord: {
+      word: 'forelsket',
+      language: '挪威语',
+      meaning: '一种刚开始喜欢某人时，兴奋、期待和紧张交织的微妙心动。'
+    },
     isNegative: false,
     suggestion:
       '允许自己一边期待、一边保留分寸就好。你不需要逼自己现在就确定答案。'
@@ -93,6 +118,11 @@ const TEMPLATES = [
     },
     analysis:
       '这段情绪里最突出的不是单纯的火气，而是冲突带来的受伤和防御感。',
+    foreignEmotionWord: {
+      word: 'ressentiment',
+      language: '法语',
+      meaning: '一种被冒犯或压住后累积起来的怨愤、受伤和不平。'
+    },
     isNegative: true,
     suggestion:
       '如果情绪还很高，可以先让自己离开争执现场一会儿。等身体不再那么绷，再决定要不要继续沟通。'
@@ -132,6 +162,7 @@ function buildResult(rawInput, template, extra) {
     mainEmotion: payload.mainEmotion,
     subEmotions: payload.subEmotions.slice(),
     explanations: cloneExplanations(payload.explanations),
+    foreignEmotionWord: payload.foreignEmotionWord || null,
     analysis: payload.analysis,
     isNegative: payload.isNegative,
     isHighRisk: Boolean(payload.isHighRisk),

@@ -17,7 +17,8 @@ Page({
     errorMessage: '',
     canUseMockFallback: emotionService.canUseMockDemo(),
     savedId: '',
-    saveButtonText: '保存这条情绪日记',
+    isAutoSaving: false,
+    autoSaveErrorMessage: '',
     suggestionTitle: '轻量疏导',
     sourceLabel: ''
   },
@@ -66,9 +67,12 @@ Page({
       explanationPairs: this.buildExplanationPairs(nextResult),
       errorMessage: '',
       savedId: nextResult.savedId || '',
-      saveButtonText: nextResult.savedId ? '已保存到云端' : '保存这条情绪日记',
+      isAutoSaving: false,
+      autoSaveErrorMessage: '',
       suggestionTitle: nextResult.isHighRisk ? '高风险支持提示' : '轻量疏导',
       sourceLabel: nextResult.source === 'mock' ? '演示结果' : ''
+    }, () => {
+      this.autoSaveJournal(nextResult);
     });
   },
 
@@ -79,7 +83,8 @@ Page({
       explanationPairs: [],
       errorMessage: '',
       savedId: '',
-      saveButtonText: '保存这条情绪日记',
+      isAutoSaving: false,
+      autoSaveErrorMessage: '',
       suggestionTitle: '轻量疏导',
       sourceLabel: ''
     });
@@ -95,6 +100,8 @@ Page({
         explanationPairs: [],
         errorMessage: error.message || '真实分析暂时不可用，请稍后再试。',
         savedId: '',
+        isAutoSaving: false,
+        autoSaveErrorMessage: '',
         sourceLabel: ''
       });
     }
@@ -120,19 +127,21 @@ Page({
     this.applyResult(result);
   },
 
-  async saveJournal() {
-    if (this.data.status !== 'succeeded' || this.data.savedId) {
+  async autoSaveJournal(resultToSave) {
+    if (!resultToSave || resultToSave.savedId || this.autoSaveInFlight) {
       return;
     }
 
-    wx.showLoading({
-      title: '保存中'
+    this.autoSaveInFlight = true;
+    this.setData({
+      isAutoSaving: true,
+      autoSaveErrorMessage: ''
     });
 
     try {
       await userService.ensureCurrentUser();
-      const journal = await journalCloudService.createJournal(this.data.result);
-      const nextResult = Object.assign({}, this.data.result, { savedId: journal.id });
+      const journal = await journalCloudService.createJournal(resultToSave);
+      const nextResult = Object.assign({}, resultToSave, { savedId: journal.id });
 
       setPendingAnalysis(nextResult);
       markPendingAnalysisSaved(journal.id);
@@ -140,20 +149,26 @@ Page({
       this.setData({
         result: nextResult,
         savedId: journal.id,
-        saveButtonText: '已保存到云端'
+        isAutoSaving: false,
+        autoSaveErrorMessage: ''
       });
 
       wx.showToast({
-        title: '已保存到云端',
+        title: '已自动保存',
         icon: 'success'
       });
     } catch (error) {
+      const message = error.message || '保存失败，请稍后再试';
+      this.setData({
+        isAutoSaving: false,
+        autoSaveErrorMessage: message
+      });
       wx.showToast({
-        title: error.message || '保存失败，请稍后再试',
+        title: '自动保存失败',
         icon: 'none'
       });
     } finally {
-      wx.hideLoading();
+      this.autoSaveInFlight = false;
     }
   },
 
@@ -168,8 +183,8 @@ Page({
   },
 
   backToInput() {
-    wx.navigateBack({
-      delta: 1
+    wx.reLaunch({
+      url: '/pages/input/input'
     });
   },
 

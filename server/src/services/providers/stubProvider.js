@@ -11,6 +11,11 @@ function selectTemplate(rawInput) {
         '疲惫': '这种拉扯会持续消耗你的能量。',
         '困惑': '你一边理解对方，一边又放不下自己的感受。'
       },
+      foreignEmotionWord: {
+        word: 'lítost',
+        language: '捷克语',
+        meaning: '一种被伤害后的委屈、羞恼、自怜和不甘交织在一起的感受。'
+      },
       analysis: '你既感到被指出问题的不舒服，也意识到对方可能并非全错，因此出现了复杂的委屈和内耗。',
       isNegative: true,
       isHighRisk: false,
@@ -27,6 +32,11 @@ function selectTemplate(rawInput) {
         '无力': '你知道要做什么，却很难在当下提起行动的力气。',
         '空心感': '心里像被抽掉了一块，难以连接到热情。',
         '迟缓': '情绪和身体都像慢了一拍。'
+      },
+      foreignEmotionWord: {
+        word: 'acedia',
+        language: '拉丁语',
+        meaning: '一种精神上的倦怠、提不起劲和与生活暂时断开连接的状态。'
       },
       analysis: '这更像是一种持续性的情绪走低，不一定有明确导火索，却会影响行动感和兴趣感。',
       isNegative: true,
@@ -45,6 +55,7 @@ function selectTemplate(rawInput) {
         '绝望': '你可能会觉得眼前没有出口，这种感受值得被认真对待。',
         '孤立感': '人在极端低落时，很容易觉得自己只能一个人扛。'
       },
+      foreignEmotionWord: null,
       analysis: '这段表达说明你正承受非常高的痛苦和压力，现在最重要的是优先保证安全。',
       isNegative: true,
       isHighRisk: true,
@@ -60,6 +71,11 @@ function selectTemplate(rawInput) {
       '疲惫': '这更像是一种被消耗后的迟缓。',
       '迟滞': '你不是没有想法，而是暂时很难切换到行动状态。',
       '分心': '注意力容易飘走，常见于压力累积的时候。'
+    },
+    foreignEmotionWord: {
+      word: 'ennui',
+      language: '法语',
+      meaning: '一种说不清缘由的倦怠、空虚和兴趣减退感。'
     },
     analysis: '这段感受里最明显的是一种说不清的内耗，像是许多小压力一起堆了上来。',
     isNegative: true,

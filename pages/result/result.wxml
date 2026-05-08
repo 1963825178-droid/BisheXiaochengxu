@@ -14,7 +14,7 @@
     <view class="section-subtitle">{{errorMessage}}</view>
     <view class="page-actions top-gap-lg">
       <button class="primary-btn" bindtap="retryAnalysis">重试真实分析</button>
-      <button wx:if="{{canUseMockFallback}}" class="secondary-btn" bindtap="useMockDemo">使用 mock 演示</button>
+      <button wx:if="{{canUseMockFallback}}" class="secondary-btn" bindtap="useMockDemo">使用演示分析</button>
       <button class="ghost-btn" bindtap="backToInput">返回重新输入</button>
     </view>
   </view>
@@ -45,6 +45,15 @@
       </view>
     </view>
 
+    <view wx:if="{{result.foreignEmotionWord}}" class="surface-card foreign-word-card">
+      <view class="section-title">更贴近的外文词</view>
+      <view class="foreign-word-row">
+        <view class="foreign-word">{{result.foreignEmotionWord.word}}</view>
+        <view class="soft-tag">{{result.foreignEmotionWord.language}}</view>
+      </view>
+      <view class="body-text foreign-word-meaning">{{result.foreignEmotionWord.meaning}}</view>
+    </view>
+
     <view class="surface-card">
       <view class="section-title">情绪解析</view>
       <view class="body-text analysis-text">{{result.analysis}}</view>
@@ -58,8 +67,10 @@
       </view>
     </view>
 
+    <view wx:if="{{isAutoSaving}}" class="auto-save-status">正在自动保存为情绪日记</view>
+    <view wx:elif="{{autoSaveErrorMessage}}" class="auto-save-status auto-save-status--error">自动保存失败：{{autoSaveErrorMessage}}</view>
+
     <view class="page-actions">
-      <button class="primary-btn" disabled="{{savedId}}" bindtap="saveJournal">{{saveButtonText}}</button>
       <button wx:if="{{savedId}}" class="secondary-btn" bindtap="openDetail">查看完整日记</button>
       <button class="ghost-btn" bindtap="goCalendar">去日历页查看记录</button>
       <button class="ghost-btn" bindtap="backToInput">重新输入</button>

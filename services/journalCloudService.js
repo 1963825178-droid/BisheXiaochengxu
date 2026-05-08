@@ -8,9 +8,23 @@ function normalizeError(error, fallbackMessage) {
     };
   }
 
+  const rawMessage = [
+    error.message,
+    error.errMsg,
+    error.code,
+    error.errCode
+  ].filter(Boolean).join(' ');
+
+  if (/function.*time.*limit|functions_time_limit_exceeded|timed out after|time limit exceeded|timeout|超时/i.test(rawMessage)) {
+    return {
+      code: error.code || 'CLOUD_TIMEOUT',
+      message: '云端服务响应超时，请稍后重试'
+    };
+  }
+
   return {
     code: error.code || 'UNKNOWN_ERROR',
-    message: error.message || fallbackMessage
+    message: error.message || error.errMsg || fallbackMessage
   };
 }
 
