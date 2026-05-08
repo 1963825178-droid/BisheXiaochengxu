@@ -2,7 +2,7 @@ const https = require('https');
 const { DEEPSEEK_API_KEY, DEEPSEEK_BASE_URL, DEEPSEEK_MODEL } = require('../env');
 const { SYSTEM_PROMPT, buildUserPrompt } = require('../emotionPrompt');
 
-const PROVIDER_TIMEOUT_MS = 55000;
+const PROVIDER_TIMEOUT_MS = 18000;
 
 function extractJsonText(content) {
   if (typeof content !== 'string') {

@@ -1,5 +1,15 @@
 <view class="page-shell">
-  <block wx:if="{{journal}}">
+  <view wx:if="{{status === 'loading'}}" class="surface-card loading-card">
+    <view class="section-title">加载中</view>
+    <view class="section-subtitle">正在读取这条情绪日记，请稍等片刻。</view>
+    <view class="loading-wrap">
+      <view class="loading-dot"></view>
+      <view class="loading-dot"></view>
+      <view class="loading-dot"></view>
+    </view>
+  </view>
+
+  <block wx:elif="{{status === 'succeeded' && journal}}">
     <view class="hero-card">
       <view class="muted-text">保存时间</view>
       <view class="headline">{{journal.mainEmotion}}</view>
@@ -53,7 +63,7 @@
 
   <view wx:else class="surface-card empty-state">
     <view class="section-title">没有找到这条日记</view>
-    <view class="section-subtitle">可能是参数缺失，或者这条记录已经被删除。</view>
+    <view class="section-subtitle">{{errorMessage}}</view>
     <button class="primary-btn" bindtap="goHome">回到首页</button>
   </view>
 </view>

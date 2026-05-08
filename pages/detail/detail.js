@@ -3,9 +3,11 @@ const userService = require('../../services/userService');
 
 Page({
   data: {
+    status: 'loading',
     journalId: '',
     journal: null,
     explanationPairs: [],
+    errorMessage: '可能是参数缺失，或者这条记录已经被删除。',
     suggestionTitle: '轻量疏导',
     sourceLabel: ''
   },
@@ -19,20 +21,33 @@ Page({
   async loadJournal() {
     if (!this.data.journalId) {
       this.setData({
+        status: 'failed',
         journal: null,
         explanationPairs: [],
+        errorMessage: '日记 ID 缺失，暂时无法读取这条记录。',
         suggestionTitle: '轻量疏导',
         sourceLabel: ''
       });
       return;
     }
 
+    this.setData({
+      status: 'loading',
+      journal: null,
+      explanationPairs: [],
+      errorMessage: '',
+      suggestionTitle: '轻量疏导',
+      sourceLabel: ''
+    });
+
     try {
       await userService.ensureCurrentUser();
       const journal = await journalCloudService.getJournalDetail(this.data.journalId);
 
       this.setData({
+        status: 'succeeded',
         journal,
+        errorMessage: '',
         sourceLabel: journal.source === 'mock' ? '演示结果' : '',
         suggestionTitle: journal.isHighRisk ? '支持提示' : '轻量疏导',
         explanationPairs: [journal.mainEmotion].concat(journal.subEmotions).map((emotion) => ({
@@ -42,8 +57,10 @@ Page({
       });
     } catch (error) {
       this.setData({
+        status: 'failed',
         journal: null,
         explanationPairs: [],
+        errorMessage: error.message || '读取日记失败，请稍后再试。',
         suggestionTitle: '轻量疏导',
         sourceLabel: ''
       });

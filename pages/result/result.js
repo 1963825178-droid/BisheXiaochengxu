@@ -183,8 +183,13 @@ Page({
   },
 
   backToInput() {
-    wx.reLaunch({
-      url: '/pages/input/input'
+    wx.navigateBack({
+      delta: 1,
+      fail() {
+        wx.reLaunch({
+          url: '/pages/input/input'
+        });
+      }
     });
   },
 
