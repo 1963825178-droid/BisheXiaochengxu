@@ -71,8 +71,7 @@
     <view wx:elif="{{autoSaveErrorMessage}}" class="auto-save-status auto-save-status--error">自动保存失败：{{autoSaveErrorMessage}}</view>
 
     <view class="page-actions">
-      <button wx:if="{{savedId}}" class="secondary-btn" bindtap="openDetail">查看完整日记</button>
-      <button class="ghost-btn" bindtap="goCalendar">去日历页查看记录</button>
+      <button class="secondary-btn" bindtap="goCalendar">去日历页查看记录</button>
       <button class="ghost-btn" bindtap="backToInput">重新输入</button>
     </view>
   </block>

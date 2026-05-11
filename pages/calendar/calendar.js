@@ -1,6 +1,7 @@
 const { buildCalendarMonthView } = require('../../services/journalStore');
 const journalCloudService = require('../../services/journalCloudService');
 const userService = require('../../services/userService');
+const { formatDateKey } = require('../../utils/time');
 
 Page({
   data: {
@@ -11,6 +12,7 @@ Page({
     cells: [],
     totalEntries: 0,
     selectedDateKey: '',
+    todayDateKey: '',
     selectedTitle: '先选择一个日期',
     selectedEntries: [],
     monthEntries: []
@@ -18,6 +20,8 @@ Page({
 
   onLoad() {
     const now = new Date();
+    const todayKey = formatDateKey(now);
+    this.setData({ todayDateKey: todayKey });
     this.loadMonth(now.getFullYear(), now.getMonth() + 1);
   },
 

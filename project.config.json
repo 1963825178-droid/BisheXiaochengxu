@@ -35,7 +35,24 @@
   "condition": {},
   "simulatorPluginLibVersion": {},
   "packOptions": {
-    "ignore": [],
+    "ignore": [
+      {
+        "type": "folder",
+        "value": "tmp"
+      },
+      {
+        "type": "folder",
+        "value": "server"
+      },
+      {
+        "type": "suffix",
+        "value": ".md"
+      },
+      {
+        "type": "suffix",
+        "value": ".lnk"
+      }
+    ],
     "include": []
   },
   "editorSetting": {},

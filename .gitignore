@@ -7,3 +7,5 @@ Thumbs.db
 server/.env
 server/*.log
 cloudfunctions/**/node_modules/
+tmp/
+*.lnk

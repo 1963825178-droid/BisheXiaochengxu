@@ -172,16 +172,6 @@ Page({
     }
   },
 
-  openDetail() {
-    if (!this.data.savedId) {
-      return;
-    }
-
-    wx.navigateTo({
-      url: `/pages/detail/detail?id=${this.data.savedId}`
-    });
-  },
-
   backToInput() {
     wx.navigateBack({
       delta: 1,

@@ -18,7 +18,7 @@
       <view
         wx:for="{{cells}}"
         wx:key="dateKey"
-        class="day-cell {{item.isCurrentMonth ? '' : 'day-cell--muted'}} {{item.dateKey === selectedDateKey ? 'day-cell--selected' : ''}}"
+        class="day-cell {{item.isCurrentMonth ? '' : 'day-cell--muted'}} {{item.dateKey === selectedDateKey ? 'day-cell--selected' : ''}} {{item.dateKey === todayDateKey ? 'day-cell--today' : ''}}"
         data-date-key="{{item.dateKey}}"
         data-is-current-month="{{item.isCurrentMonth}}"
         bindtap="selectDay"

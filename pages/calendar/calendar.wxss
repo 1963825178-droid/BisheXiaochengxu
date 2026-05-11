@@ -78,3 +78,15 @@
 .empty-inline {
   margin-top: 20rpx;
 }
+
+.day-cell--today .day-number {
+  color: #669999;
+}
+
+.day-cell--today .day-dot {
+  color: #669999;
+}
+
+.day-cell--selected .day-number {
+  color: #426042;
+}
