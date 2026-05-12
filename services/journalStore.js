@@ -262,12 +262,18 @@ function buildMonthlyStats(entries, year, month) {
     .map((name) => ({
       name,
       count: emotionCounter[name],
-      percent: totalMentions ? Math.max(8, Math.round((emotionCounter[name] / totalMentions) * 100)) : 0,
+      percent: totalMentions ? Math.round((emotionCounter[name] / totalMentions) * 100) : 0,
       color: getEmotionColor(name)
     }))
     .sort((left, right) => right.count - left.count)
     .slice(0, 6);
 
+  const mainEmotionRanks = Object.keys(mainEmotionCounter)
+    .map((name) => ({
+      name,
+      count: mainEmotionCounter[name]
+    }))
+    .sort((left, right) => right.count - left.count);
   const negativeCount = safeEntries.filter((entry) => entry.isNegative).length;
   const positiveCount = safeEntries.length - negativeCount;
   const negativeRatio = safeEntries.length ? Math.round((negativeCount / safeEntries.length) * 100) : 0;
@@ -278,21 +284,52 @@ function buildMonthlyStats(entries, year, month) {
     monthLabel: formatMonthLabel(year, month),
     totalEntries: safeEntries.length,
     topEmotions,
-    mainEmotionRanks: Object.keys(mainEmotionCounter)
-      .map((name) => ({
-        name,
-        count: mainEmotionCounter[name]
-      }))
-      .sort((left, right) => right.count - left.count),
+    mainEmotionRanks,
     negativeCount,
     positiveCount,
     negativeRatio,
     positiveRatio: safeEntries.length ? 100 - negativeRatio : 0,
-    summary: safeEntries.length
-      ? `本月你最常出现的情绪是「${topEmotions[0].name}」${topEmotions[1] ? `与「${topEmotions[1].name}」` : ''}，整体状态更偏${negativeCount >= positiveCount ? '紧绷' : '平衡'}。`
-      : '这个月还没有保存记录，先写下第一条心情，我们就能开始生成月度情绪画像。',
+    summary: generateSummary(safeEntries.length, mainEmotionRanks, negativeCount),
     latestEntries: safeEntries.slice(0, 4)
   };
+}
+
+function generateSummary(totalEntries, mainEmotionRanks, negativeCount) {
+  if (!totalEntries) {
+    return '这个月还没有保存记录，先写下第一条心情，我们就能开始生成月度情绪画像。';
+  }
+
+  const total = totalEntries;
+  const ranks = mainEmotionRanks;
+  const rankLen = ranks.length;
+
+  let emotionPart;
+  if (rankLen >= 2 && ranks[0].count - ranks[1].count <= 1) {
+    const list = [ranks[0].name];
+    if (ranks[1]) list.push(ranks[1].name);
+    if (rankLen >= 3 && ranks[1].count - ranks[2].count <= 1) {
+      list.push(ranks[2].name);
+    }
+    emotionPart = `本月你的情绪体验比较多样，主要感受到了「${list.join('」「')}」等多种情绪`;
+  } else if (rankLen >= 1) {
+    const topName = ranks[0].name;
+    const secondName = rankLen >= 2 ? ranks[1].name : null;
+    emotionPart = `本月你最常出现的情绪是「${topName}」${secondName ? `与「${secondName}」` : ''}`;
+  } else {
+    emotionPart = '';
+  }
+
+  const negRatio = negativeCount / total;
+  let tonePart;
+  if (negRatio >= 0.7) {
+    tonePart = '整体状态偏紧绷，记得给自己一些放松的空间。';
+  } else if (negRatio >= 0.4) {
+    tonePart = '情绪有起有落，这是很正常的。';
+  } else {
+    tonePart = '整体状态偏积极平稳，继续好好照顾自己。';
+  }
+
+  return `${emotionPart}，${tonePart}`;
 }
 
 module.exports = {

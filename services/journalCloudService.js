@@ -116,6 +116,11 @@ async function migrateLocalJournals(journals) {
   });
 }
 
+async function refreshAISummary(year, month) {
+  const data = await callJournalService('refreshAISummary', { year, month }, '刷新 AI 月度总结失败，请稍后再试');
+  return data || {};
+}
+
 module.exports = {
   createJournal,
   deleteJournal,
@@ -124,5 +129,6 @@ module.exports = {
   getMonthStats,
   getRecentJournals,
   migrateLocalJournals,
+  refreshAISummary,
   normalizeError
 };

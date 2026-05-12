@@ -13,18 +13,21 @@
   <view class="surface-card">
     <view class="section-title">月度总结</view>
     <view class="body-text top-gap">{{summary}}</view>
+    <button class="beta-refresh-btn" bindtap="refreshSummary">🔄 内测：刷新 AI 总结</button>
   </view>
 
   <view class="surface-card">
-    <view class="section-title">情绪占比</view>
-    <view wx:if="{{topEmotions.length}}" class="bar-list top-gap">
-      <view wx:for="{{topEmotions}}" wx:key="name" class="bar-item">
-        <view class="bar-meta">
-          <view class="bar-name">{{item.name}}</view>
-          <view class="muted-text">{{item.count}} 次</view>
-        </view>
-        <view class="bar-track">
-          <view class="bar-fill" style="width: {{item.percent}}%; background: {{item.color}};"></view>
+    <view class="section-title">情绪分布</view>
+    <view wx:if="{{topEmotions.length}}" class="bento-grid top-gap">
+      <view
+        wx:for="{{topEmotions}}"
+        wx:key="name"
+        class="bento-item bento-{{item.bentoType}}"
+        style="background: {{item.color}}1a; border-left: 6rpx solid {{item.color}};"
+      >
+        <view class="bento-content">
+          <view class="bento-name">{{item.name}}</view>
+          <view class="bento-count">{{item.count}} 次</view>
         </view>
       </view>
     </view>

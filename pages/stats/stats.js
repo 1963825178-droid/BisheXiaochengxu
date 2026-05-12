@@ -29,6 +29,12 @@ Page({
     try {
       await userService.ensureCurrentUser();
       const stats = await journalCloudService.getMonthStats(year, month);
+      if (stats.topEmotions) {
+        stats.topEmotions = stats.topEmotions.map((item, idx) => ({
+          ...item,
+          bentoType: idx === 0 ? 'large' : (idx < 3 ? 'medium' : 'small')
+        }));
+      }
       this.setData(stats);
     } catch (error) {
       this.setData({
@@ -76,5 +82,33 @@ Page({
     wx.reLaunch({
       url: '/pages/input/input'
     });
+  },
+
+  async refreshSummary() {
+    wx.showLoading({
+      title: '总结中…'
+    });
+    try {
+      const result = await journalCloudService.refreshAISummary(this.data.year, this.data.month);
+      if (result.summary) {
+        this.setData({ summary: result.summary });
+        wx.showToast({
+          title: '总结已刷新',
+          icon: 'success'
+        });
+      } else {
+        wx.showToast({
+          title: '本月暂无记录可总结',
+          icon: 'none'
+        });
+      }
+    } catch (error) {
+      wx.showToast({
+        title: error.message || '刷新失败，请稍后再试',
+        icon: 'none'
+      });
+    } finally {
+      wx.hideLoading();
+    }
   }
 });
