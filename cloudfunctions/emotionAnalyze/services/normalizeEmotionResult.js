@@ -10,6 +10,24 @@ function ensureString(value, fallbackValue) {
   return typeof value === 'string' && value.trim() ? value.trim() : fallbackValue;
 }
 
+function normalizeRiskLevel(value, fallbackValue) {
+  const allowedLevels = ['none', 'mild', 'medium', 'high'];
+  if (allowedLevels.includes(value)) {
+    return value;
+  }
+
+  return allowedLevels.includes(fallbackValue) ? fallbackValue : 'none';
+}
+
+function normalizeRiskType(value, fallbackValue) {
+  const allowedTypes = ['none', 'self_harm', 'harm_others', 'crisis', 'abuse'];
+  if (allowedTypes.includes(value)) {
+    return value;
+  }
+
+  return allowedTypes.includes(fallbackValue) ? fallbackValue : 'none';
+}
+
 function normalizeForeignEmotionWord(value) {
   const source = ensureObject(value);
   const word = ensureString(source.word, '');
@@ -38,6 +56,12 @@ function normalizeEmotionResult(payload, rawInput) {
   const mainEmotion = ensureString(safePayload.mainEmotion, '茫然');
   const subEmotions = ensureArray(safePayload.subEmotions).slice(0, 5);
   const explanations = ensureObject(safePayload.explanations);
+  const fallbackRiskLevel = safePayload.isHighRisk ? 'high' : 'none';
+  const riskLevel = normalizeRiskLevel(safePayload.riskLevel, fallbackRiskLevel);
+  const riskType = normalizeRiskType(safePayload.riskType, riskLevel === 'high' ? 'crisis' : 'none');
+  const riskSignal = typeof safePayload.riskSignal === 'boolean'
+    ? safePayload.riskSignal
+    : riskLevel !== 'none';
 
   [mainEmotion].concat(subEmotions).filter(Boolean).forEach((emotion) => {
     if (!explanations[emotion]) {
@@ -53,7 +77,11 @@ function normalizeEmotionResult(payload, rawInput) {
     foreignEmotionWord: normalizeForeignEmotionWord(safePayload.foreignEmotionWord),
     analysis: ensureString(safePayload.analysis, '这段表达里有比较复杂的情绪拉扯，值得被认真对待。'),
     isNegative: typeof safePayload.isNegative === 'boolean' ? safePayload.isNegative : true,
-    isHighRisk: Boolean(safePayload.isHighRisk),
+    riskLevel,
+    riskType,
+    riskSignal,
+    riskReason: ensureString(safePayload.riskReason, ''),
+    isHighRisk: riskLevel === 'high',
     suggestion: ensureString(safePayload.suggestion, '先把情绪放稳，再决定下一步要怎么做。'),
     source: ensureString(safePayload.source, 'ai')
   };

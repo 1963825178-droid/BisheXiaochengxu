@@ -50,9 +50,12 @@
       <view class="body-text top-gap">{{journal.analysis}}</view>
     </view>
 
-    <view class="surface-card">
+    <view class="surface-card {{journal.riskLevel === 'high' ? 'risk-card' : ''}}">
       <view class="section-title">{{suggestionTitle}}</view>
       <view class="body-text top-gap">{{journal.suggestion}}</view>
+      <view wx:if="{{journal.riskLevel === 'high'}}" class="risk-note">
+        说明：这里不会做诊断，只提醒你先联系现实支持资源，优先保证安全。
+      </view>
     </view>
 
     <view class="page-actions">

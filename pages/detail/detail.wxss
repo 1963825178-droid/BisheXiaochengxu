@@ -47,6 +47,23 @@
   border: 1rpx solid rgba(170, 111, 92, 0.2);
 }
 
+.risk-card {
+  border-color: rgba(173, 117, 99, 0.2);
+  background:
+    radial-gradient(circle at top right, rgba(237, 237, 165, 0.18) 0%, rgba(237, 237, 165, 0) 28%),
+    linear-gradient(180deg, rgba(250, 243, 228, 0.96), rgba(247, 236, 221, 0.94));
+}
+
+.risk-note {
+  margin-top: 18rpx;
+  padding: 18rpx 20rpx;
+  border-radius: 18rpx;
+  background: rgba(173, 117, 99, 0.1);
+  font-size: 24rpx;
+  line-height: 1.7;
+  color: #8e644e;
+}
+
 @keyframes pulse {
   0%,
   80%,

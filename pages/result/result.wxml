@@ -59,10 +59,10 @@
       <view class="body-text analysis-text">{{result.analysis}}</view>
     </view>
 
-    <view class="surface-card {{result.isHighRisk ? 'risk-card' : ''}}">
+    <view class="surface-card {{result.riskLevel === 'high' ? 'risk-card' : ''}}">
       <view class="section-title">{{suggestionTitle}}</view>
       <view class="body-text">{{result.suggestion}}</view>
-      <view wx:if="{{result.isHighRisk}}" class="risk-note">
+      <view wx:if="{{result.riskLevel === 'high'}}" class="risk-note">
         说明：这里不会做诊断，只提醒你先联系现实支持资源，优先保证安全。
       </view>
     </view>

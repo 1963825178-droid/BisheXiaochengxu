@@ -49,7 +49,7 @@ Page({
         journal,
         errorMessage: '',
         sourceLabel: journal.source === 'mock' ? '演示结果' : '',
-        suggestionTitle: journal.isHighRisk ? '支持提示' : '轻量疏导',
+        suggestionTitle: journal.riskLevel === 'high' ? '支持提示' : '轻量疏导',
         explanationPairs: [journal.mainEmotion].concat(journal.subEmotions).map((emotion) => ({
           emotion,
           description: journal.explanations[emotion]

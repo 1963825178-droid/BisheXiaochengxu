@@ -69,7 +69,7 @@ Page({
       savedId: nextResult.savedId || '',
       isAutoSaving: false,
       autoSaveErrorMessage: '',
-      suggestionTitle: nextResult.isHighRisk ? '高风险支持提示' : '轻量疏导',
+      suggestionTitle: nextResult.riskLevel === 'high' ? '高风险支持提示' : '轻量疏导',
       sourceLabel: nextResult.source === 'mock' ? '演示结果' : ''
     }, () => {
       this.autoSaveJournal(nextResult);

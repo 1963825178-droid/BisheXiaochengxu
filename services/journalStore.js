@@ -73,9 +73,36 @@ function normalizeForeignEmotionWord(value) {
   };
 }
 
+function normalizeRiskLevel(value, fallbackValue) {
+  const allowedLevels = ['none', 'mild', 'medium', 'high'];
+  if (allowedLevels.indexOf(value) > -1) {
+    return value;
+  }
+
+  return allowedLevels.indexOf(fallbackValue) > -1 ? fallbackValue : 'none';
+}
+
+function normalizeRiskType(value, fallbackValue) {
+  const allowedTypes = ['none', 'self_harm', 'harm_others', 'crisis', 'abuse'];
+  if (allowedTypes.indexOf(value) > -1) {
+    return value;
+  }
+
+  return allowedTypes.indexOf(fallbackValue) > -1 ? fallbackValue : 'none';
+}
+
 function attachJournalMeta(journal) {
+  const riskLevel = normalizeRiskLevel(journal.riskLevel, journal.isHighRisk ? 'high' : 'none');
+  const riskType = normalizeRiskType(journal.riskType, riskLevel === 'high' ? 'crisis' : 'none');
+  const riskSignal = typeof journal.riskSignal === 'boolean' ? journal.riskSignal : riskLevel !== 'none';
+
   return Object.assign({}, journal, {
     id: journal.id || journal._id || '',
+    riskLevel,
+    riskType,
+    riskSignal,
+    riskReason: typeof journal.riskReason === 'string' ? journal.riskReason.trim() : '',
+    isHighRisk: riskLevel === 'high',
     keywordLine: buildKeywordLine(journal),
     foreignEmotionWord: normalizeForeignEmotionWord(journal.foreignEmotionWord),
     displayTimeText: formatDateTimeValue(journal.createdAt)
@@ -89,6 +116,8 @@ function ensureLegacyJournalShape(journal) {
 
   const createdAt = journal.createdAt || new Date().toISOString();
   const createdDate = new Date(createdAt);
+  const riskLevel = normalizeRiskLevel(journal.riskLevel, journal.isHighRisk ? 'high' : 'none');
+  const riskType = normalizeRiskType(journal.riskType, riskLevel === 'high' ? 'crisis' : 'none');
 
   return attachJournalMeta({
     id: journal.id || '',
@@ -100,6 +129,10 @@ function ensureLegacyJournalShape(journal) {
     analysis: journal.analysis || '',
     suggestion: journal.suggestion || '',
     isNegative: typeof journal.isNegative === 'boolean' ? journal.isNegative : true,
+    riskLevel,
+    riskType,
+    riskSignal: typeof journal.riskSignal === 'boolean' ? journal.riskSignal : riskLevel !== 'none',
+    riskReason: typeof journal.riskReason === 'string' ? journal.riskReason.trim() : '',
     isHighRisk: Boolean(journal.isHighRisk),
     diaryText: journal.diaryText || '',
     createdAt,

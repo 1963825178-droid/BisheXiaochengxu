@@ -49,6 +49,24 @@ function normalizeForeignEmotionWord(value) {
   };
 }
 
+function normalizeRiskLevel(value, fallbackValue) {
+  const allowedLevels = ['none', 'mild', 'medium', 'high'];
+  if (allowedLevels.indexOf(value) > -1) {
+    return value;
+  }
+
+  return allowedLevels.indexOf(fallbackValue) > -1 ? fallbackValue : 'none';
+}
+
+function normalizeRiskType(value, fallbackValue) {
+  const allowedTypes = ['none', 'self_harm', 'harm_others', 'crisis', 'abuse'];
+  if (allowedTypes.indexOf(value) > -1) {
+    return value;
+  }
+
+  return allowedTypes.indexOf(fallbackValue) > -1 ? fallbackValue : 'none';
+}
+
 function getEmotionColor(emotion) {
   const palette = {
     委屈: '#C98C5F',
@@ -84,6 +102,10 @@ function serializeJournal(doc) {
     return null;
   }
 
+  const riskLevel = normalizeRiskLevel(doc.riskLevel, doc.isHighRisk ? 'high' : 'none');
+  const riskType = normalizeRiskType(doc.riskType, riskLevel === 'high' ? 'crisis' : 'none');
+  const riskSignal = typeof doc.riskSignal === 'boolean' ? doc.riskSignal : riskLevel !== 'none';
+
   return {
     id: doc._id,
     rawInput: doc.rawInput || '',
@@ -94,7 +116,11 @@ function serializeJournal(doc) {
     analysis: doc.analysis || '',
     suggestion: doc.suggestion || '',
     isNegative: typeof doc.isNegative === 'boolean' ? doc.isNegative : true,
-    isHighRisk: Boolean(doc.isHighRisk),
+    riskLevel,
+    riskType,
+    riskSignal,
+    riskReason: typeof doc.riskReason === 'string' ? doc.riskReason.trim() : '',
+    isHighRisk: riskLevel === 'high',
     diaryText: doc.diaryText || '',
     createdAt: doc.createdAt || '',
     dateKey: doc.dateKey || '',
@@ -149,6 +175,9 @@ function ensureSavablePayload(payload) {
 async function createJournal(openid, payload) {
   ensureSavablePayload(payload);
   const now = new Date().toISOString();
+  const riskLevel = normalizeRiskLevel(payload.riskLevel, payload.isHighRisk ? 'high' : 'none');
+  const riskType = normalizeRiskType(payload.riskType, riskLevel === 'high' ? 'crisis' : 'none');
+  const riskSignal = typeof payload.riskSignal === 'boolean' ? payload.riskSignal : riskLevel !== 'none';
 
   const addResult = await db.collection('journals').add({
     data: {
@@ -162,7 +191,11 @@ async function createJournal(openid, payload) {
       analysis: payload.analysis,
       suggestion: payload.suggestion || '',
       isNegative: typeof payload.isNegative === 'boolean' ? payload.isNegative : true,
-      isHighRisk: Boolean(payload.isHighRisk),
+      riskLevel,
+      riskType,
+      riskSignal,
+      riskReason: typeof payload.riskReason === 'string' ? payload.riskReason.trim() : '',
+      isHighRisk: riskLevel === 'high',
       diaryText: payload.diaryText || '',
       source: payload.source || 'ai',
       createdAt: payload.createdAt,
@@ -683,6 +716,9 @@ async function migrateLocal(openid, payload) {
       continue;
     }
 
+    const riskLevel = normalizeRiskLevel(journal.riskLevel, journal.isHighRisk ? 'high' : 'none');
+    const riskType = normalizeRiskType(journal.riskType, riskLevel === 'high' ? 'crisis' : 'none');
+    const riskSignal = typeof journal.riskSignal === 'boolean' ? journal.riskSignal : riskLevel !== 'none';
     const addResult = await collection.add({
       data: {
         openid,
@@ -695,7 +731,11 @@ async function migrateLocal(openid, payload) {
         analysis: journal.analysis || '',
         suggestion: journal.suggestion || '',
         isNegative: typeof journal.isNegative === 'boolean' ? journal.isNegative : true,
-        isHighRisk: Boolean(journal.isHighRisk),
+        riskLevel,
+        riskType,
+        riskSignal,
+        riskReason: typeof journal.riskReason === 'string' ? journal.riskReason.trim() : '',
+        isHighRisk: riskLevel === 'high',
         diaryText: journal.diaryText || '',
         source: journal.source || 'mock',
         createdAt: journal.createdAt,

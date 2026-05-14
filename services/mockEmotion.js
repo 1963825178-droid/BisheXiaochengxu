@@ -1,4 +1,8 @@
-const HIGH_RISK_PATTERN = /自杀|自残|自伤|不想活|想死|结束自己|活着没意思|伤害自己|撑不下去/;
+const MOCK_STRONG_RISK_PATTERN = /准备自杀|打算自杀|决定自杀|计划自杀|今晚.*结束自己|今天.*结束自己|想跳楼|想跳河|想割腕|(?:今晚|今天|现在|马上|等会儿|一会儿|明天).{0,16}从.{0,8}(楼上|楼顶|天台|桥上|窗户|高处).{0,8}跳下去|(?:我|自己).{0,8}(?:想|要|准备|打算|决定|计划).{0,12}从.{0,8}(楼上|楼顶|天台|桥上|窗户|高处).{0,8}跳下去|买好了?药|药.{0,8}买好了?|买了安眠药|安眠药.{0,8}买了|写好了?遗书|遗书.{0,8}写好了?|永别了|这是我最后一次/;
+const MOCK_HARM_OTHERS_STRONG_PATTERN = /(?:我)?(?:真|真的|现在|马上|等会儿|一会儿)?(?:想|要|准备|打算|决定|必须|一定要).{0,10}(?:把你|将你|对你).{0,8}(?:杀了|弄死|砍死|打死|废了)|杀了你|弄死你|砍死你|打死你|废了你|捅死你|宰了你|(?:你|他|她|这个人|那个人).{0,8}(?:必须|一定要|就该|该).{0,8}(?:死在我手里|被我弄死|被我杀了)|(?:再有一次|你再这样|你再|再敢|下次再).{0,18}(?:杀了你|弄死你|砍死你|打死你|废了你|死在我手里|必须死)/;
+const MOCK_WEAK_RISK_PATTERN = /想死|去死了|直接去死|不想活|撑不下去|活着没意思|原地消失|要跳了|想跳了|真要跳了|难懂得要死|难懂的要死|难听得要死|难听的要死|累死了|烦死了|气死了|困死了|累死|烦死/;
+const MOCK_WEAK_HARM_OTHERS_PATTERN = /杀了我|要把我干死|把我干死|把我干死了|干死我|气得想打人|想骂人|想揍人/;
+const MOCK_EXAGGERATION_CONTEXT_PATTERN = /加班|工作|考试|考试周|作业|论文|毕设|bug|Bug|BUG|代码|改得|累得|忙得|烦得|太难|老师|课程|这课|听完|难懂|难听|拖|老登/;
 
 const DEFAULT_TEMPLATE = {
   mainEmotion: '茫然',
@@ -17,6 +21,10 @@ const DEFAULT_TEMPLATE = {
     meaning: '一种说不清缘由的倦怠、空虚和兴趣减退感。'
   },
   isNegative: true,
+  riskLevel: 'none',
+  riskType: 'none',
+  riskSignal: false,
+  riskReason: '没有出现明确自伤意图、计划、方法、准备行为或告别表达。',
   suggestion:
     '先不要逼自己一次性把原因想清楚。也许可以从一件最小的动作开始，比如喝口水、离开屏幕两分钟。'
 };
@@ -155,8 +163,56 @@ function findTemplate(text) {
   return bestMatch;
 }
 
+function classifyMockRisk(text) {
+  if (MOCK_HARM_OTHERS_STRONG_PATTERN.test(text)) {
+    return {
+      riskLevel: 'high',
+      riskType: 'harm_others',
+      riskSignal: true,
+      riskReason: '表达中出现明确伤害他人的对象、威胁、条件式升级或致死表达。'
+    };
+  }
+
+  if (MOCK_STRONG_RISK_PATTERN.test(text)) {
+    return {
+      riskLevel: 'high',
+      riskType: 'self_harm',
+      riskSignal: true,
+      riskReason: '表达中出现明确自伤/自杀意图、方法、准备行为或告别表达。'
+    };
+  }
+
+  if (MOCK_WEAK_RISK_PATTERN.test(text)) {
+    const hasAmbiguousJump = /要跳了|想跳了|真要跳了/.test(text);
+    return {
+      riskLevel: hasAmbiguousJump ? 'medium' : MOCK_EXAGGERATION_CONTEXT_PATTERN.test(text) ? 'mild' : 'medium',
+      riskType: 'self_harm',
+      riskSignal: true,
+      riskReason: '表达中有弱风险词，但语义上更接近压力宣泄或自怨自艾，没有明确计划、方法或准备行为。'
+    };
+  }
+
+  if (MOCK_WEAK_HARM_OTHERS_PATTERN.test(text)) {
+    return {
+      riskLevel: 'mild',
+      riskType: 'abuse',
+      riskSignal: true,
+      riskReason: '表达中出现攻击性或危险词，但没有明确伤害他人的对象、计划或真实意图。'
+    };
+  }
+
+  return {
+    riskLevel: 'none',
+    riskType: 'none',
+    riskSignal: false,
+    riskReason: '没有出现明确自伤意图、计划、方法、准备行为或告别表达。'
+  };
+}
+
 function buildResult(rawInput, template, extra) {
   const payload = Object.assign({}, template, extra || {});
+  const riskLevel = payload.riskLevel || (payload.isHighRisk ? 'high' : 'none');
+  const riskType = payload.riskType || (riskLevel === 'high' ? 'crisis' : 'none');
   return {
     rawInput,
     mainEmotion: payload.mainEmotion,
@@ -165,7 +221,11 @@ function buildResult(rawInput, template, extra) {
     foreignEmotionWord: payload.foreignEmotionWord || null,
     analysis: payload.analysis,
     isNegative: payload.isNegative,
-    isHighRisk: Boolean(payload.isHighRisk),
+    riskLevel,
+    riskType,
+    riskSignal: typeof payload.riskSignal === 'boolean' ? payload.riskSignal : riskLevel !== 'none',
+    riskReason: payload.riskReason || '',
+    isHighRisk: riskLevel === 'high',
     suggestion: payload.suggestion,
     source: payload.source || 'mock'
   };
@@ -173,31 +233,41 @@ function buildResult(rawInput, template, extra) {
 
 function analyzeEmotionText(text) {
   const normalizedText = (text || '').trim();
+  const risk = classifyMockRisk(normalizedText);
 
-  if (HIGH_RISK_PATTERN.test(normalizedText)) {
+  if (risk.riskLevel === 'high') {
     return buildResult(normalizedText, {
-      mainEmotion: '极度低落',
-      subEmotions: ['失控感', '绝望', '孤立感'],
+      mainEmotion: risk.riskType === 'harm_others' ? '强烈愤怒' : '极度低落',
+      subEmotions: risk.riskType === 'harm_others' ? ['报复冲动', '失控感', '敌意'] : ['失控感', '绝望', '孤立感'],
       explanations: {
-        '极度低落': '你现在的情绪负荷已经很重，单靠硬撑可能会越来越困难。',
+        [risk.riskType === 'harm_others' ? '强烈愤怒' : '极度低落']: risk.riskType === 'harm_others' ? '这段表达里愤怒和攻击冲动已经很强，需要先拉开现实距离。' : '你现在的情绪负荷已经很重，单靠硬撑可能会越来越困难。',
+        '报复冲动': '你把痛苦指向了具体对象，并出现了报复性表达。',
+        '敌意': '语言里包含明确攻击和威胁，需要先停止升级。',
         '失控感': '很多事情像从手里滑出去，让你难以稳住自己。',
         '绝望': '你可能会觉得眼前没有出口，这种感受值得被认真对待。',
         '孤立感': '人在极端低落时，很容易觉得自己只能一个人扛。'
       },
       analysis:
-        '这段表达已经超出了普通的情绪波动，说明你正承受非常高的痛苦和压力。现在最重要的不是继续分析，而是尽快让自己回到有人能支持你的环境里。',
+        risk.riskType === 'harm_others'
+          ? '这段表达包含明确伤害他人的威胁和升级信号，当前最重要的是让冲突降温，并尽快让现实中的第三方介入。'
+          : '这段表达已经超出了普通的情绪波动，说明你正承受非常高的痛苦和压力。现在最重要的不是继续分析，而是尽快让自己回到有人能支持你的环境里。',
       isNegative: true,
-      isHighRisk: true,
+      riskLevel: risk.riskLevel,
+      riskType: risk.riskType,
+      riskSignal: risk.riskSignal,
+      riskReason: risk.riskReason,
+      isHighRisk: risk.riskLevel === 'high',
       suggestion:
-        '如果你已经有伤害自己的念头，请优先联系身边可信任的人陪着你，或尽快联系当地心理援助热线、医院急诊或紧急求助渠道。先确保自己不是一个人。',
+        risk.riskType === 'harm_others'
+          ? '先尽量远离冲突对象，暂停继续发送攻击性信息。可以联系可信任的人、辅导员、家人、老师或相关人员帮助介入。如果你担心自己会失控伤人，请立即寻求现实紧急帮助。'
+          : '如果你已经有伤害自己的念头，请优先联系身边可信任的人陪着你，或尽快联系当地心理援助热线、医院急诊或紧急求助渠道。先确保自己不是一个人。',
       source: 'mock'
     });
   }
 
-  return buildResult(normalizedText, findTemplate(normalizedText));
+  return buildResult(normalizedText, findTemplate(normalizedText), risk);
 }
 
 module.exports = {
-  HIGH_RISK_PATTERN,
   analyzeEmotionText
 };
