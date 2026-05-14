@@ -13,7 +13,7 @@
   <view class="surface-card">
     <view class="section-title">月度总结</view>
     <view class="body-text top-gap">{{summary}}</view>
-    <button class="beta-refresh-btn" bindtap="refreshSummary">🔄 内测：刷新 AI 总结</button>
+    <button class="beta-refresh-btn" bindtap="refreshSummary">🔄 内测：刷新月度总结</button>
   </view>
 
   <view class="surface-card">
